@@ -16,7 +16,7 @@ except sqlite.Error, e:
 
 local_networks = ['DREAMHACK', 'RFC_10', 'RFC_172', 'RFC_192']
 
-graph = pydot.Dot(graph_type='digraph', splines='true', concentrate='true', pack='true', center='true', dpi='600')
+graph = pydot.Dot(graph_type='digraph', splines='true', concentrate='true', pack='true', center='true')
 
 # Generate colors
 c.execute('''SELECT COUNT(*) FROM service;''')
