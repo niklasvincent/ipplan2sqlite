@@ -1,6 +1,11 @@
 #!/usr/bin/python
 import sqlite3, os, sys, re, json
 
+path = os.path.abspath(os.path.join(os.path.dirname(__file__), 'lib'))
+if not path in sys.path:
+    sys.path.insert(1, path)
+del path
+
 SYNTAX = {"^#@" : "master_network", "^#\$" : "host", "^[A-Z]" : "network" }
 
 # Check arguments
