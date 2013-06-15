@@ -37,7 +37,7 @@ def add_any(c):
 	ipv4_netmask_dec 	= None
 	
 	# IPv6
-	ipv6 				= "::"
+	ipv6 				= "::/0"
 	ipv6_netmask		= None
 	ipv6_gateway		= None
 	
