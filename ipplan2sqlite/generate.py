@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/env python2
 import sqlite3, os, sys, re, json
 
 path = os.path.abspath(os.path.join(os.path.dirname(__file__), 'lib'))
