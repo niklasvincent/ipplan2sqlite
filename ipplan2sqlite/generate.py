@@ -94,26 +94,15 @@ logging.debug( 'Found ipplan file %s', args.ipplan )
 
 # Parse ipplan
 logging.debug( 'Parsing lines in %s', args.ipplan )
-lines = []
 try:
   with open( args.ipplan, 'r' ) as f:
-    for line in f.readlines():
-      lines.append( line.strip().split() )
+    lines = f.readlines()
 except Exception as e:
   logging.error( 'Could not parse ipplan file %s: %s', args.ipplan, e )
 
-# Extract VLANs
-logging.debug( 'Extracting VLANs from parsed ipplan' )
-vlan = None
-for l in lines:
-  if len(l) == 0:
-    continue
-  parser_func = parser.parser_func( l )
-  if parser_func:
-    parse_using = getattr( parser, parser_func, vlan )
-    result = parse_using( l, c, vlan )
-    if not result is None:
-      vlan = result
+# Parse ipplan
+logging.debug( 'Parsing ipplan' )
+parser.parse( lines, c )
 
 # Add custom networks
 logging.debug( 'Adding custom networks' )

@@ -117,3 +117,16 @@ def parser_func(l):
     if re.match( exp, l[0] ):
       return SYNTAX[exp]
   return None
+
+def parse(lines, c):
+  vlan = None
+  for line in lines:
+    if isinstance( line, str ):
+      line = line.strip().split()
+    if len( line ) == 0:
+      continue
+    func = parser_func( line )
+    if func:
+      parse_using = getattr( MODULE, func, vlan )
+      result = parse_using( line, c, vlan )
+      vlan = result if result is not None else vlan
