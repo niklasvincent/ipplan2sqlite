@@ -1,4 +1,4 @@
-def print_all(c):
+def print_all(c, logger):
 	# Number of nodes?
 	c.execute('SELECT COUNT(*) FROM node')
 	nbr_of_nodes = c.fetchone()[0]
@@ -23,9 +23,9 @@ def print_all(c):
 	c.execute('''SELECT COUNT(*) FROM active_switch;''')
 	nbr_of_active_switches = c.fetchone()[0]
 	
-	print "Number of nodes:\t\t%d" % nbr_of_nodes
-	print "Number of hosts:\t\t%d" % nbr_of_hosts
-	print "Number of networks:\t\t%d" % nbr_of_networks
-	print "Number of firewall rules:\t%d" % nbr_of_firewall_rules
-	print "Number of switches:\t\t%d" % nbr_of_switches
-	print "Number of active switches:\t%d" % nbr_of_active_switches
+	logger.info( "Number of nodes: %d", nbr_of_nodes )
+        logger.info( "Number of hosts: %d",  nbr_of_hosts )
+        logger.info( "Number of networks: %d", nbr_of_networks )
+        logger.info( "Number of firewall rules: %d", nbr_of_firewall_rules )
+	logger.info( "Number of switches: %d", nbr_of_switches )
+	logger.info( "Number of active switches: %d", nbr_of_active_switches )
