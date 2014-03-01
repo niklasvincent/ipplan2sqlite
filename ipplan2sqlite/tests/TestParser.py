@@ -2,25 +2,13 @@ import os
 import sqlite3
 import sys
 import unittest
+from BaseTestCase import BaseTestCase
 
 path = os.path.abspath( os.path.join( os.path.dirname( __file__ ), '../lib' ) )
 sys.path.insert( 1, path )
 import parser
-import tables
 
-class TestParser(unittest.TestCase):
-
-  def _query(self, q):
-    return self.c.execute( q ).fetchall()
-
-  def setUp(self):
-    self.conn = sqlite3.connect(':memory:')
-    self.c = self.conn.cursor()
-    tables.create( self.conn )
-
-  def tearDown(self):
-    self.conn.close()
-    self.c = None
+class TestParser(BaseTestCase, unittest.TestCase):
 
   def testParseIPv4(self):
     self.assertEquals( parser.ip2long( '8.8.8.8', 4 ), 134744072 )
@@ -30,6 +18,9 @@ class TestParser(unittest.TestCase):
     self.assertEquals( parser.parser_func( ["#$ d20--b.event.dreamhack.local\t\t\t10.0.3.45\t\t\tipv4f;ipv4r;tblswmgmt"] ), "host" )
     self.assertEquals( parser.parser_func( ["""TECH-SRV-1-INT 						D-FW-V		77.80.231.0/27		921	othernet"""]) , "network" )
     self.assertEquals( parser.parser_func( ["""#@ IPV4-NET      77.80.128.0/17"""] ), "master_network" )
+
+  def testParseMasterNetwork(self):
+    pass
 
   def testParseNetworkAndHost(self):
     network_line = """TECH-SRV-1-INT 						D-FW-V		77.80.231.0/27		921	othernet"""

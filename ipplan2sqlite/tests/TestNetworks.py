@@ -2,25 +2,14 @@ import os
 import sqlite3
 import sys
 import unittest
+from BaseTestCase import BaseTestCase
 
 path = os.path.abspath( os.path.join( os.path.dirname( __file__ ), '../lib' ) )
 sys.path.insert( 1, path )
 import networks
 import tables
 
-class TestNetworks(unittest.TestCase):
-
-  def _query(self, q):
-    return self.c.execute( q ).fetchall()
-
-  def setUp(self):
-    self.conn = sqlite3.connect(':memory:')
-    self.c = self.conn.cursor()
-    tables.create( self.conn )
-
-  def tearDown(self):
-    self.conn.close()
-    self.c = None
+class TestNetworks(BaseTestCase, unittest.TestCase):
 
   def testAddAll(self):
     networks.add_all( self.c )
