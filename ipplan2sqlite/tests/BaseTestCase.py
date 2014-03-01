@@ -1,3 +1,4 @@
+import json
 import os
 import sqlite3
 import sys
@@ -17,6 +18,12 @@ class BaseTestCase(object):
     with open( f, 'r' ) as f:
       lines = f.readlines()
     return lines
+
+  def _load_JSON(self, f):
+    f = os.path.abspath( os.path.join( os.path.dirname( __file__ ), f ) )
+    with open( f, 'r' ) as f:
+      data = json.load( f )
+    return data
 
   def setUp(self):
     self.conn = sqlite3.connect( ':memory:' )
