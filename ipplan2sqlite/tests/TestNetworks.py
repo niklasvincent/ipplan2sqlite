@@ -26,9 +26,7 @@ class TestNetworks(unittest.TestCase):
     networks.add_all( self.c )
     nbr_of_networks = self._query( 'SELECT COUNT(*) FROM network' )[0][0]
     self.assertEquals( nbr_of_networks, 4, "Additional or missing networks" )
-
-    print nbr_of_networks
-
+  
   def testAddAllRFC1918(self):
     networks.add_all_rfc_1918( self.c )
     expected_networks = [ '10.0.0.0/8', '172.16.0.0/12', '192.168.0.0/16' ]
