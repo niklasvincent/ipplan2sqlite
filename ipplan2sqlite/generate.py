@@ -1,5 +1,9 @@
 #!/usr/bin/env python2
-import sqlite3, os, sys, re, json
+import json
+import re
+import os
+import sqlite3
+import sys
 
 path = os.path.abspath(os.path.join(os.path.dirname(__file__), 'lib'))
 if not path in sys.path:
