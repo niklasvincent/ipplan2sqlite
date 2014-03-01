@@ -20,18 +20,14 @@ class TestParser(BaseTestCase, unittest.TestCase):
     self.assertEquals( parser.parser_func( ["""#@ IPV4-NET      77.80.128.0/17"""] ), "master_network" )
 
   def testParseMasterNetwork(self):
-    pass
+    parser.parse( self._load( 'data/testParseMasterNetwork.txt' ), self.c )
+    networks = self._query( 'SELECT * FROM network' )
+    self.assertEquals( len( networks ), 1, "Missing master network" )
+    self.assertEquals( networks[0][0], 1, "Wrong node id" )
+    self.assertEquals( networks[0][1], 'DREAMHACK', "Wrong network name" )
 
   def testParseNetworkAndHost(self):
-    network_line = """TECH-SRV-1-INT 						D-FW-V		77.80.231.0/27		921	othernet"""
-
-    host_line = """#$ ddns1.event.dreamhack.se						77.80.231.201			ipv4f;ipv4r;ipv6f;ipv6r;s=dhssh64,ddns-dhssh64;c=ldaps64,log64,pgdb64,mydb64,ddns-mydb64;p=dns64,ntp64,smtp64,dhcp64"""
-
-    vlan = parser.network( network_line.split(), self.c, None )
-    
-    self.assertEquals( vlan, 921, "Wrong VLAN" )
-    
-    parser.host( host_line.split(), self.c, vlan )
+    parser.parse( self._load( 'data/testParseNetworkAndHost.txt' ), self.c )
 
     self.assertEquals( self._query( 'SELECT COUNT(*) FROM node' )[0][0], 2, "Wrong number of nodes")
 
