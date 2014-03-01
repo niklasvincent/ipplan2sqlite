@@ -1,0 +1,26 @@
+[
+	{
+	"name": "norm",
+	"description": "Normal flow for services"
+	},
+	{
+	"name": "jump",
+	"description": "Jumpgate flow for services"
+	},
+	{
+	"name": "tech",
+	"description": "tech flow for services"
+	},
+	{
+	"name": "wifi",
+	"description": "wifi flow for access"
+	},
+	{
+	"name": "ddns",
+	"description": "ddns flow for services"
+	},
+	{
+        "name": "chill",
+        "description": "chill flow for services"
+        }
+]

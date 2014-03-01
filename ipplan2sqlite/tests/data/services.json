@@ -1,0 +1,164 @@
+[
+    {
+        "service": "dhssh",
+        "description": "the ssh demon",
+        "destport": "2022/tcp",
+        "sourceport": "1025-65535/tcp"
+    },
+    {
+        "service": "modb",
+        "description": "the mongo database",
+        "destport": "27017/tcp",
+        "sourceport": "1025-65535/tcp"
+    },
+    {
+        "service": "mydb",
+        "description": "the MySql database",
+        "destport": "3306/tcp",
+        "sourceport": "1025-65535/tcp"
+    },
+    {
+        "service": "pgdb",
+        "description": "the PostGres database",
+        "destport": "5432/tcp,5432/udp",
+        "sourceport": "1025-65535/tcp,1025-65535/udp"
+    },
+    {
+        "service": "https",
+        "description": "the webz is here",
+        "destport": "443/tcp",
+        "sourceport": "1025-65535/tcp"
+    },
+    {
+        "service": "http",
+        "description": "the webz is here",
+        "destport": "80/tcp",
+        "sourceport": "1025-65535/tcp"
+    },
+    {
+        "service": "ran",
+        "description": "rancid",
+        "destport": "22/tcp",
+        "sourceport": "1025-65535/tcp"
+    },
+    {
+        "service": "log",
+        "description": "syslog is the thitz",
+        "destport": "514/udp,514/tcp",
+        "sourceport": "1025-65535/udp,1025-65535/tcp"
+    },
+    {
+        "service": "irclog",
+        "description": "syslog is the thitz for mirkk",
+        "destport": "50007/udp,50007/tcp",
+        "sourceport": "1025-65535/udp,1025-65535/tcp"
+    },
+    {
+        "service": "dns",
+        "description": "I like dns",
+        "destport": "53/udp,53/tcp",
+        "sourceport": "1025-65535/udp"
+    },
+    {
+        "service": "dhcp",
+        "description": "I like dhcp",
+        "destport": "67/udp",
+        "sourceport": "68/udp"
+    },
+    {
+        "service": "ldap",
+        "description": "ldap rockz",
+        "destport": "389/tcp",
+        "sourceport": "1025-65535/tcp"
+    },
+    {
+        "service": "ldaps",
+        "description": "ldaps are more",
+        "destport": "636/tcp",
+        "sourceport": "1025-65535/tcp"
+    },
+    {
+        "service": "tac",
+        "description": "kakkaks",
+        "destport": "49-51/tcp",
+        "sourceport": "1025-65535/tcp"
+    },
+    {
+        "service": "ntp",
+        "description": "time is the thitz",
+        "destport": "123/udp,123/tcp",
+        "sourceport": "1025-65535/tcp,1025-65535/udp"
+    },
+    {
+        "service": "smtp",
+        "description": "mailz vill jag ha",
+        "destport": "25/tcp",
+        "sourceport": "1025-65535/tcp"
+    },
+    {
+        "service": "snmpc",
+        "description": "ports for snmpc client - server",
+        "destport": "165-168/tcp",
+        "sourceport": "1025-65535/tcp"
+    },
+	{
+        "service": "snmptrap",
+        "description": "snmp trap ports",
+        "destport": "162/tcp,162/udp",
+        "sourceport": "1025-65535/tcp,1025-65535/udp"
+    },
+	{
+        "service": "rdp",
+        "description": "RDP port",
+        "destport": "3389/tcp",
+        "sourceport": "1025-65535/tcp"
+    },
+    {
+        "service": "ircs",
+        "description": "ports for ssl-irc",
+        "destport": "9000/tcp",
+        "sourceport": "1025-65535/tcp"
+    },
+    {
+        "service": "irc",
+        "description": "ports for irc",
+        "destport": "6667/tcp",
+        "sourceport": "1025-65535/tcp"
+    },
+    {
+        "service": "tftp",
+        "description": "tftp ports",
+        "destport": "69/udp",
+        "sourceport": "1025-65535/udp"
+    },
+    {
+        "service": "redb",
+        "description": "ports for redis",
+        "destport": "6379/tcp",
+        "sourceport": "1025-65535/tcp"
+    },
+    {
+        "service": "rsync",
+        "description": "ports for rsync",
+        "destport": "873/tcp",
+        "sourceport": "1025-65535/tcp"
+    },
+    {
+        "service": "racc",
+        "description": "radius accounting",
+        "destport": "1813/tcp,1813/udp",
+        "sourceport": "1025-65535/tcp,1025-65535/udp"
+    },
+    {
+        "service": "nfsfour",
+        "description": "nfsv4",
+        "destport": "2049/tcp",
+        "sourceport": "1025-65535/tcp"
+    },
+    {
+        "service": "minecraft",
+        "description": "minecraft",
+        "destport": "25565/tcp",
+        "sourceport": "1025-65535/tcp"
+    }
+]
