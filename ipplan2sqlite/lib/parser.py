@@ -1,5 +1,13 @@
-import re, ipcalc, socket, struct
+import ipcalc
+import re
+import socket
+import struct
+import sys
 from binascii import hexlify
+
+MODULE = sys.modules[ __name__ ]
+
+SYNTAX = {"^#@" : "master_network", "^#\$" : "host", "^[A-Z]" : "network" }
 
 def master_network(l, c, r):
 	if r is not None:
@@ -103,4 +111,4 @@ def ip2long(ip, version):
 		return struct.unpack("!L", packedIP)[0]
 	else:
 		return int(hexlify(socket.inet_pton(socket.AF_INET6, ip)), 16)
-		
+

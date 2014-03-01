@@ -33,7 +33,7 @@ import parser
 import statistics
 import tables
 
-SYNTAX = {"^#@" : "master_network", "^#\$" : "host", "^[A-Z]" : "network" }
+SYNTAX = parser.SYNTAX
 
 """ Parse command line arguments """
 args_parser = argparse.ArgumentParser()
