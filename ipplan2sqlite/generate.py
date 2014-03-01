@@ -125,10 +125,7 @@ except Exception as e:
 # Add services to database
 logging.debug( 'Adding services to database' )
 try:
-  for service in services:
-    row = [str(service['service']), str(service['description']), str(service['destport']), str(service['sourceport'])]
-    logging.debug( 'Adding service \'%s\'', row[0] )
-    c.execute('INSERT INTO service VALUES (NULL, ?, ?, ?, ?)', row)
+  firewall.add_services( services, c )
 except Exception as e:
   logging.error( 'Could not add services to database: %s', e )
 
@@ -147,10 +144,7 @@ except Exception as e:
 
 # Add flows to database
 try:
-  for flow in flows:
-    row = [str(flow['name']), str(flow['description'])]
-    logging.debug( 'Adding flow \'%s\'', row[0] )
-    c.execute('INSERT INTO flow VALUES (NULL, ?, ?)', row)
+  firewall.add_flows( flows, c )
 except Exception as e:
   logging.error( 'Could not add services to database: %s', e )
   sys.exit( 8 )

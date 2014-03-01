@@ -1,4 +1,15 @@
 import re
+import json
+
+def add_services(services, c):
+  for service in services:
+    row = [str(service['service']), str(service['description']), str(service['destport']), str(service['sourceport'])]
+    c.execute('INSERT INTO service VALUES (NULL, ?, ?, ?, ?)', row)
+
+def add_flows(flows, c):
+  for flow in flows:
+    row = [str(flow['name']), str(flow['description'])]
+    c.execute('INSERT INTO flow VALUES (NULL, ?, ?)', row)
 
 def build(c):
 	client_server(c)
