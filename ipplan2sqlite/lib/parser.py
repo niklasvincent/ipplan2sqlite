@@ -112,3 +112,8 @@ def ip2long(ip, version):
 	else:
 		return int(hexlify(socket.inet_pton(socket.AF_INET6, ip)), 16)
 
+def parser_func(l):
+  for exp in SYNTAX:
+    if re.match( exp, l[0] ):
+      return SYNTAX[exp]
+  return None

@@ -100,12 +100,12 @@ vlan = None
 for l in lines:
   if len(l) == 0:
     continue
-  for exp in SYNTAX:
-    if re.match( exp, l[0] ):
-      parse_using = getattr( parser, SYNTAX[exp], vlan )
-      result = parse_using( l, c, vlan )
-      if not result is None:
-        vlan = result
+  parser_func = parser.parser_func( l )
+  if parser_func:
+    parse_using = getattr( parser, parser_func, vlan )
+    result = parse_using( l, c, vlan )
+    if not result is None:
+      vlan = result
 
 # Add custom networks
 logging.debug( 'Adding custom networks' )
