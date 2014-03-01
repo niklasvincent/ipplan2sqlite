@@ -149,10 +149,6 @@ except Exception as e:
   logging.error( 'Could not add services to database: %s', e )
   sys.exit( 8 )
 
-# Add normal flow
-logging.debug( 'Adding flow \'normal\'' )
-c.execute('INSERT INTO flow VALUES (NULL, ?, ?)', ['normal', 'normal flow'])
-
 # Build firewall
 logging.debug( 'Building firewall rules' )
 firewall.build(c)

@@ -10,6 +10,7 @@ def add_flows(flows, c):
   for flow in flows:
     row = [str(flow['name']), str(flow['description'])]
     c.execute('INSERT INTO flow VALUES (NULL, ?, ?)', row)
+  c.execute('INSERT INTO flow VALUES (NULL, ?, ?)', ['normal', 'normal flow'])
 
 def build(c):
 	client_server(c)
@@ -25,7 +26,7 @@ def client_server(c):
 	
 	for server in servers:
 		to_node_id 		= int(server[0])
-		
+	
 		service = parse_service(c, server[1])
 		
 		# Select all clients
@@ -108,7 +109,7 @@ def parse_service(c, service):
 		service_name 	= service_name.split('-')[-1]
 	else:
 		flow_name = 'normal'
-	flow_id 			= get_flow_id(c, flow_name)
+        flow_id 			= get_flow_id(c, flow_name)
 	
 	# Service?
 	service_id 	= get_service_id(c, service_name)
