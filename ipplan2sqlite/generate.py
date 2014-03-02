@@ -28,6 +28,7 @@ if not path in sys.path:
 del path
 
 import firewall
+import location
 import networks
 import parser
 import statistics
@@ -42,6 +43,7 @@ args_parser.add_argument( "--ipplan", help="Path to ipplan file", required=True)
 args_parser.add_argument( "--database", help="Path to final SQLite database", required=True )
 args_parser.add_argument( "--services", help="Path to services file", required=True )
 args_parser.add_argument( "--flows", help="Path to flows file", required=True )
+args_parser.add_argument( "--seatmap", help="Path to seatmap file", required=True )
 args = args_parser.parse_args()
 
 # Adjust logging to desired verbosity
@@ -132,8 +134,8 @@ except Exception as e:
 # Read the flows file
 logging.debug( 'Checking if flows file \'%s\' exists', args.flows )
 if not os.path.isfile( args.flows ):
-        logging.error( 'No such flows file: \'%s\'', args.flows )
-	sys.exit( 7 )
+  logging.error( 'No such flows file: \'%s\'', args.flows )
+  sys.exit( 7 )
 logging.debug( 'Found flows file \'%s\'', args.flows )
 logging.debug( 'Parsing flows file as JSON' )
 try:
@@ -152,6 +154,22 @@ except Exception as e:
 # Build firewall
 logging.debug( 'Building firewall rules' )
 firewall.build(c)
+
+# Read the seat map file
+logging.debug( 'Checking of seatmap file \'%s\' exists', args.seatmap )
+if not os.path.isfile( args.seatmap ):
+  logging.error( 'No such seatmap file: \'%s\'', args.seatmap )
+  sys.exit( 9 )
+logging.debug( 'Found seatmap file \'%s\'', args.seatmap )
+logging.debug( 'Parsing seatmap file as JSON' )
+try:
+  with open( args.seatmap, 'r' ) as f:
+    seatmap = json.loads( f.read() )
+except Exception as e:
+  logging.error( 'Could not parse seatmap file \'%s\' as JSON: %s', args.seatmap, e )
+
+# Build location mapping
+location.add_coordinates( seatmap, c )
 
 # Output some nice statistics
 current_statistics = statistics.gather_all( c )

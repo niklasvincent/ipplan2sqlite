@@ -36,7 +36,15 @@ def create(conn):
 	service_id INTEGER, flow_id INTEGER, is_ipv4 BOOLEAN, is_ipv6 BOOLEAN,
 	FOREIGN KEY (from_node_id) REFERENCES node (id), FOREIGN KEY (to_node_id) REFERENCES node (id),
 	FOREIGN KEY (service_id) REFERENCES service (id), FOREIGN KEY (flow_id) REFERENCES flow (id))''')
-	
+
+	# Table coordinates
+	c.execute('''CREATE TABLE  table_coordinates(
+	name TEXT, hall TEXT, x1 INTEGER, x2 INTEGER, y1 INTEGER, y2 INTEGER)''')
+
+	# Switch coordinates
+	c.execute('''CREATE TABLE switch_coordinates(
+	switch_name TEXT, y INTEGER, x INTEGER)''')
+
 	# Meta data
 	c.execute('''CREATE TABLE meta_data(name TEXT, value TEXT)''')
 	
