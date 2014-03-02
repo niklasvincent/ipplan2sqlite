@@ -39,7 +39,8 @@ def create(conn):
 
 	# Table coordinates
 	c.execute('''CREATE TABLE  table_coordinates(
-	name TEXT, hall TEXT, x1 INTEGER, x2 INTEGER, y1 INTEGER, y2 INTEGER)''')
+	name TEXT, hall TEXT, x1 INTEGER, x2 INTEGER, y1 INTEGER, y2 INTEGER,
+	x_start INTEGER, y_start INTEGER, width INTEGER, height INTEGER, horizontal INTEGER)''')
 
 	# Switch coordinates
 	c.execute('''CREATE TABLE switch_coordinates(
