@@ -16,3 +16,6 @@ coverage:
 	  coverage erase
 	  coverage run tests/TestFirewall.py
 	  coverage report -m
+
+draw: debug
+		python viewer.py --database ipplan.db --hall D

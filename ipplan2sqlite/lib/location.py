@@ -1,7 +1,8 @@
 import re
 from collections import namedtuple
-Square = namedtuple( 'Square', ['x1', 'x2', 'y1', 'y2', 'x_start', 'y_start', 
-    'width', 'height', 'horizontal'] )
+
+from layout import Rectangle
+
 def add_coordinates( seatmap, cursor ):
   halls = {}
   tables = {}
@@ -15,12 +16,30 @@ def add_coordinates( seatmap, cursor ):
   switches = switches_by_table( cursor )
 
   for hall in halls:
+    table_coordinates = []
+    x_min = 10**6
+    y_max = 0
+    y_min = 10**6
     for table in tables[hall].iterkeys():
-      coordinates = c = table_location( table, tables )
-      row = [table, hall, c.x1, c.x2, c.y1, c.y2, c.x_start, c.y_start, 
-              c.width, c.height, c.horizontal]
-      cursor.execute( 'INSERT INTO table_coordinates VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', row )
+      c = table_location( table, tables )
+      table_coordinates.append( (table, c) )
+      x_min = c.x1 if c.x1 < x_min else x_min
+      x_min = c.x2 if c.x2 < x_min else x_min
+      y_max = c.y1 if c.y1 > y_max else y_max
+      y_max = c.y2 if c.y2 > y_max else y_max
+      y_min = c.y1 if c.y1 < y_min else y_min
+      y_min = c.y2 if c.y2 < y_min else y_min
 
+    x_offset = x_min
+    y_offset = y_min
+
+    for table, t in table_coordinates:
+      coordinates = c = Rectangle( t.x1 - x_offset, t.x2 - x_offset, t.y1 - y_offset,
+              t.y2 - y_offset, t.x_start - x_offset, t.y_start - y_offset,
+              t.width, t.height, t.horizontal )
+      row = [table, hall, c.x1, c.x2, c.y1, c.y2, c.x_start, c.y_start, 
+            c.width, c.height, c.horizontal]
+      cursor.execute( 'INSERT INTO table_coordinates VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', row )
       n = len( switches.get( table, [] ) )
       if n:
         locations = zip( switches[table], switch_locations( coordinates, n ) )
@@ -56,10 +75,15 @@ def table_location(table, tables):
   x_start = min( x1, x2 )
   y_start = min( y1, y2 )
   horizontal = 1 if x_len > y_len else 0
+
+  if horizontal:
+      y1 += 5
+      y2 -= 5
+
   width = x_len if horizontal else y_len
   height = y_len if horizontal else x_len
 
-  return Square( x1, y1, x2, y2, x_start, y_start, width, height, horizontal )
+  return Rectangle( x1, x2, y1, y2, x_start, y_start, width, height, horizontal )
 
 def switches_by_table(cursor):
   switches = {}

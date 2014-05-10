@@ -27,6 +27,7 @@ if not path in sys.path:
     sys.path.insert( 1, path )
 del path
 
+import diff
 import firewall
 import location
 import networks
@@ -60,19 +61,19 @@ logging.debug( 'Using Python %s', platform.python_version() )
 logging.debug( 'Checking if database file %s exists', args.database )
 previous_statistics = None
 if os.path.isfile( args.database ):
-        logging.debug( 'Found existing database file %s, gathering stats before deleting', args.database )
-        try:
-          conn = sqlite3.connect( args.database )
-          c = conn.cursor()
-          previous_statistics = statistics.gather_all( c )
-          logging.debug( 'Gathered stats for previous database file \'%s\'', args.database )
-        except Exception as e:
-          logging.debug( 'Could not gather stats for previous database file \'%s\'. Corrupted?', args.database )
-        try:
-          os.unlink( args.database )
-	except Exception as e:
-          logging.erro( 'Could not delete previous database file %s', args.database )
-          sys.exit( 2 )
+    logging.debug( 'Found existing database file %s, gathering stats before deleting', args.database )
+    try:
+      conn = sqlite3.connect( args.database )
+      c = conn.cursor()
+      before = diff.get_state( c )
+      logging.debug( 'Gathered stats for previous database file \'%s\'', args.database )
+    except Exception as e:
+      logging.debug( 'Could not gather stats for previous database file \'%s\'. Corrupted?', args.database )
+    try:
+      os.unlink( args.database )
+    except Exception as e:
+      logging.error( 'Could not delete previous database file %s', args.database )
+      sys.exit( 2 )
 try:
   conn = sqlite3.connect( args.database )
   c = conn.cursor()
@@ -113,8 +114,8 @@ networks.add_all(c)
 # Read the services file
 logging.debug( 'Checking if services file %s exists', args.services )
 if not os.path.isfile( args.services ):
-        logging.error( 'No such services file: %s', args.services )
-	sys.exit( 5 )
+    logging.error( 'No such services file: %s', args.services )
+    sys.exit( 5 )
 logging.debug( 'Found services file %s', args.services )
 logging.debug( 'Parsing services file as JSON' )
 try:
@@ -171,27 +172,9 @@ except Exception as e:
 # Build location mapping
 location.add_coordinates( seatmap, c )
 
-# Output some nice statistics
-current_statistics = statistics.gather_all( c )
-statistics_lines = [
-  'Number of nodes: %d' % current_statistics['nbr_of_nodes'],
-  'Number of hosts: %d' % current_statistics['nbr_of_hosts'],
-  'Number of networks: %d' % current_statistics['nbr_of_networks'],
-  'Number of firewall rules: %d' % current_statistics['nbr_of_firewall_rules'],
-  'Number of switches: %d' % current_statistics['nbr_of_switches'],
-  'Number of active switches: %d' % current_statistics['nbr_of_active_switches'],
-]
-
-if previous_statistics:
-  line_nbr = 0
-  for metric in [ 'nbr_of_nodes', 'nbr_of_hosts', 'nbr_of_networks', 'nbr_of_firewall_rules', 'nbr_of_switches', 'nbr_of_active_switches' ]:
-    delta = current_statistics.get( metric, 0 ) - previous_statistics.get( metric, 0 )
-    if delta != 0:
-      statistics_lines[line_nbr] = statistics_lines[line_nbr] + " (%d)" % delta
-    line_nbr += 1
-
-for statistics_line in statistics_lines:
-  logging.info( statistics_line )
+# Diff the database before and after
+after = diff.get_state( c )
+diff.compare_states( before, after, logging)
 
 # Close database file
 logging.debug( 'Committing database' )
