@@ -32,6 +32,8 @@ def add_table(canvas, table, scale=1):
 
 
 def add_switch(canvas, switch, scale=1):
+    if scale != 1:
+        switch = Dot(*[scale * i for i in list(switch)])
     size = 2 * scale
     canvas.create_rectangle(
         switch.x - size,
@@ -73,17 +75,17 @@ def setup_db(filename):
 
 
 def get_tables(db, hall):
-    sql = """SELECT x1, x2, y1, y2, x_start, y_start, width, height, horizontal
+    sql = """SELECT name, x1, x2, y1, y2, x_start, y_start, width, height, horizontal
              FROM table_coordinates WHERE hall = '%s'"""
     sql = sql % hall
-    return [Rectangle(*t) for t in db.cursor().execute(sql).fetchall()]
+    return [(t[0], Rectangle(*t[1:])) for t in db.cursor().execute(sql).fetchall()]
 
 
 def get_switches(db, hall):
-    sql = """SELECT x, y
-          FROM switch_coordinates WHERE switch_name LIKE '{}%'""".format(
+    sql = """SELECT name, x, y
+          FROM switch_coordinates WHERE name LIKE '{}%'""".format(
         hall)
-    return [Dot(*s) for s in db.cursor().execute(sql).fetchall()]
+    return [(s[0], Dot(*s[1:])) for s in db.cursor().execute(sql).fetchall()]
 
 
 def main():
@@ -101,11 +103,16 @@ def main():
     w = Canvas(master, width=width, height=height, background='black')
     w.pack()
 
+    scale = 2
+
     for t in get_tables(db, args.hall):
-        add_table(w, t, scale=2)
+        logging.debug("%s (%d, %d), (%d, %d)", t[0], t[1].x1, t[1].y1,
+                      t[1].x2, t[1].y2)
+        add_table(w, t[1], scale=scale)
 
     for s in get_switches(db, args.hall):
-        add_switch(w, s, scale=2)
+        logging.debug("%s (%d, %d)", s[0], s[1].x, s[1].y)
+        add_switch(w, s[1], scale=scale)
 
     mainloop()
 
