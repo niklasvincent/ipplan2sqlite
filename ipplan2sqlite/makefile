@@ -19,3 +19,6 @@ coverage:
 
 draw: debug
 		python viewer.py --database ipplan.db --hall D
+
+lint:
+		pep8 -r .
