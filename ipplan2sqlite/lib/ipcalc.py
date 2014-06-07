@@ -65,6 +65,7 @@ except NameError:
 
 
 class IP(object):
+
     '''
     Represents a single IP address.
 
@@ -90,50 +91,59 @@ class IP(object):
     # IP range specific information, see IANA allocations.
     _range = {
         4: {
-            '01':                     'CLASS A',
-            '10':                     'CLASS B',
-            '110':                    'CLASS C',
-            '1110':                   'CLASS D MULTICAST',
-            '11100000':               'CLASS D LINKLOCAL',
-            '1111':                   'CLASS E',
-            '00001010':               'PRIVATE RFC1918',    # 10/8
-            '101011000001':           'PRIVATE RFC1918',    # 172.16/12
-            '1100000010101000':       'PRIVATE RFC1918',    # 192.168/16
+            '01': 'CLASS A',
+            '10': 'CLASS B',
+            '110': 'CLASS C',
+            '1110': 'CLASS D MULTICAST',
+            '11100000': 'CLASS D LINKLOCAL',
+            '1111': 'CLASS E',
+            '00001010': 'PRIVATE RFC1918',    # 10/8
+            '101011000001': 'PRIVATE RFC1918',    # 172.16/12
+            '1100000010101000': 'PRIVATE RFC1918',    # 192.168/16
         },
         6: {
-            '00000000':               'RESERVED',           # ::/8
-            '00000001':               'UNASSIGNED',         # 100::/8
-            '0000001':                'NSAP',               # 200::/7
-            '0000010':                'IPX',                # 400::/7
-            '0000011':                'UNASSIGNED',         # 600::/7
-            '00001':                  'UNASSIGNED',         # 800::/5
-            '0001':                   'UNASSIGNED',         # 1000::/4
-            '0010000000000000':       'RESERVED',           # 2000::/16 Reserved
-            '0010000000000001':       'ASSIGNABLE',         # 2001::/16 Sub-TLA Assignments [RFC2450]
-            '00100000000000010000000': 'ASSIGNABLE IANA',   # 2001:0000::/29 - 2001:01F8::/29 IANA
-            '00100000000000010000001': 'ASSIGNABLE APNIC',  # 2001:0200::/29 - 2001:03F8::/29 APNIC
-            '00100000000000010000010': 'ASSIGNABLE ARIN',   # 2001:0400::/29 - 2001:05F8::/29 ARIN
-            '00100000000000010000011': 'ASSIGNABLE RIPE',   # 2001:0600::/29 - 2001:07F8::/29 RIPE NCC
-            '0010000000000010':       '6TO4',               # 2002::/16 "6to4" [RFC3056]
-            '0011111111111110':       '6BONE TEST',         # 3ffe::/16 6bone Testing [RFC2471]
-            '0011111111111111':       'RESERVED',           # 3fff::/16 Reserved
-            '010':                    'GLOBAL-UNICAST',     # 4000::/3
-            '011':                    'UNASSIGNED',         # 6000::/3
-            '100':                    'GEO-UNICAST',        # 8000::/3
-            '101':                    'UNASSIGNED',         # a000::/3
-            '110':                    'UNASSIGNED',         # c000::/3
-            '1110':                   'UNASSIGNED',         # e000::/4
-            '11110':                  'UNASSIGNED',         # f000::/5
-            '111110':                 'UNASSIGNED',         # f800::/6
-            '1111110':                'UNASSIGNED',         # fc00::/7
-            '111111100':              'UNASSIGNED',         # fe00::/9
-            '1111111010':             'LINKLOCAL',          # fe80::/10
-            '1111111011':             'SITELOCAL',          # fec0::/10
-            '11111111':               'MULTICAST',          # ff00::/8
-            '0' * 96:                 'IPV4COMP',           # ::/96
-            '0' * 80 + '1' * 16:      'IPV4MAP',            # ::ffff:0:0/96
-            '0' * 128:                'UNSPECIFIED',        # ::/128
-            '0' * 127 + '1':          'LOOPBACK'            # ::1/128
+            '00000000': 'RESERVED',           # ::/8
+            '00000001': 'UNASSIGNED',         # 100::/8
+            '0000001': 'NSAP',               # 200::/7
+            '0000010': 'IPX',                # 400::/7
+            '0000011': 'UNASSIGNED',         # 600::/7
+            '00001': 'UNASSIGNED',         # 800::/5
+            '0001': 'UNASSIGNED',         # 1000::/4
+            '0010000000000000': 'RESERVED',
+            # 2000::/16 Reserved
+            '0010000000000001': 'ASSIGNABLE',
+            # 2001::/16 Sub-TLA Assignments [RFC2450]
+            '00100000000000010000000': 'ASSIGNABLE IANA',
+            # 2001:0000::/29 - 2001:01F8::/29 IANA
+            '00100000000000010000001': 'ASSIGNABLE APNIC',
+            # 2001:0200::/29 - 2001:03F8::/29 APNIC
+            '00100000000000010000010': 'ASSIGNABLE ARIN',
+            # 2001:0400::/29 - 2001:05F8::/29 ARIN
+            '00100000000000010000011': 'ASSIGNABLE RIPE',
+            # 2001:0600::/29 - 2001:07F8::/29 RIPE NCC
+            '0010000000000010': '6TO4',
+            # 2002::/16 "6to4" [RFC3056]
+            '0011111111111110': '6BONE TEST',
+            # 3ffe::/16 6bone Testing [RFC2471]
+            '0011111111111111': 'RESERVED',
+            # 3fff::/16 Reserved
+            '010': 'GLOBAL-UNICAST',     # 4000::/3
+            '011': 'UNASSIGNED',         # 6000::/3
+            '100': 'GEO-UNICAST',        # 8000::/3
+            '101': 'UNASSIGNED',         # a000::/3
+            '110': 'UNASSIGNED',         # c000::/3
+            '1110': 'UNASSIGNED',         # e000::/4
+            '11110': 'UNASSIGNED',         # f000::/5
+            '111110': 'UNASSIGNED',         # f800::/6
+            '1111110': 'UNASSIGNED',         # fc00::/7
+            '111111100': 'UNASSIGNED',         # fe00::/9
+            '1111111010': 'LINKLOCAL',          # fe80::/10
+            '1111111011': 'SITELOCAL',          # fec0::/10
+            '11111111': 'MULTICAST',          # ff00::/8
+            '0' * 96: 'IPV4COMP',           # ::/96
+            '0' * 80 + '1' * 16: 'IPV4MAP',            # ::ffff:0:0/96
+            '0' * 128: 'UNSPECIFIED',        # ::/128
+            '0' * 127 + '1': 'LOOPBACK'            # ::1/128
         }
     }
 
@@ -248,7 +258,7 @@ class IP(object):
         # hex notation
         if dq.startswith('0x'):
             ip = long(dq[2:], 16)
-            if ip > 0xffffffffffffffffffffffffffffffffL:
+            if ip > 0xffffffffffffffffffffffffffffffff:
                 raise ValueError('%s: IP address is bigger than 2^128' % dq)
             if ip <= 0xffffffff:
                 self.v = 4
@@ -266,15 +276,17 @@ class IP(object):
             if '.' in dq:
                 return self._dqtoi(hx[-1])
             if len(hx) > 8:
-                raise ValueError('%s: IPv6 address with more than 8 hexlets' % dq)
+                raise ValueError(
+                    '%s: IPv6 address with more than 8 hexlets' %
+                    dq)
             elif len(hx) < 8:
                 # No :: in address
                 if not '' in hx:
                     raise ValueError('%s: IPv6 address invalid: ' +
-                        'compressed format malformed' % dq)
+                                     'compressed format malformed' % dq)
                 elif not (dq.startswith('::') or dq.endswith('::')) and len([x for x in hx if x == '']) > 1:
                     raise ValueError('%s: IPv6 address invalid: ' +
-                        'compressed format malformed' % dq)
+                                     'compressed format malformed' % dq)
                 ix = hx.index('')
                 px = len(hx[ix + 1:])
                 for x in xrange(ix + px + 1, 8):
@@ -283,7 +295,7 @@ class IP(object):
                 pass
             elif '' in hx:
                 raise ValueError('%s: IPv6 address invalid: ' +
-                    'compressed format detected in full notation' % dq())
+                                 'compressed format detected in full notation' % dq())
             ip = ''
             hx = [x == '' and '0' or x for x in hx]
             for h in hx:
@@ -291,7 +303,7 @@ class IP(object):
                     h = '%04x' % int(h, 16)
                 if not 0 <= int(h, 16) <= 0xffff:
                     raise ValueError('%r: IPv6 address invalid: ' +
-                        'hexlets should be between 0x0000 and 0xffff' % dq)
+                                     'hexlets should be between 0x0000 and 0xffff' % dq)
                 ip += h
             self.v = 6
             return long(ip, 16)
@@ -306,11 +318,11 @@ class IP(object):
             q.reverse()
             if len(q) > 4:
                 raise ValueError('%s: IPv4 address invalid: ' +
-                    'more than 4 bytes' % dq)
+                                 'more than 4 bytes' % dq)
             for x in q:
                 if not 0 <= int(x) <= 255:
                     raise ValueError('%s: IPv4 address invalid: ' +
-                        'bytes should be between 0 and 255' % dq)
+                                     'bytes should be between 0 and 255' % dq)
             while len(q) < 4:
                 q.insert(1, '0')
             self.v = 4
@@ -391,11 +403,11 @@ class IP(object):
         else:
             if self.bin().startswith('0' * 96):
                 return IP(long(self), version=4)
-            elif long(self) & 0x20020000000000000000000000000000L:
-                return IP((long(self) - 0x20020000000000000000000000000000L) >> 80, version=4)
+            elif long(self) & 0x20020000000000000000000000000000:
+                return IP((long(self) - 0x20020000000000000000000000000000) >> 80, version=4)
             else:
                 return ValueError('%s: IPv6 address is not IPv4 compatible, ' +
-                    'nor an 6-to-4 IP' % self.dq)
+                                  'nor an 6-to-4 IP' % self.dq)
 
     @classmethod
     def from_bin(cls, value):
@@ -427,7 +439,7 @@ class IP(object):
         assert type in ['6-to-4', 'compat'], 'Conversion type not supported'
         if self.v == 4:
             if type == '6-to-4':
-                return IP(0x20020000000000000000000000000000L | long(self) << 80, version=6)
+                return IP(0x20020000000000000000000000000000 | long(self) << 80, version=6)
             elif type == 'compat':
                 return IP(long(self), version=6)
         else:
@@ -457,6 +469,7 @@ class IP(object):
 
 
 class Network(IP):
+
     '''
     Network slice calculations.
 
@@ -490,9 +503,9 @@ class Network(IP):
         4278190080
         '''
         if self.version() == 4:
-            return (0xffffffffL >> (32 - self.mask)) << (32 - self.mask)
+            return (0xffffffff >> (32 - self.mask)) << (32 - self.mask)
         else:
-            return (0xffffffffffffffffffffffffffffffffL >> (128 - self.mask)) << (128 - self.mask)
+            return (0xffffffffffffffffffffffffffffffff >> (128 - self.mask)) << (128 - self.mask)
 
     def network(self):
         '''
@@ -535,10 +548,10 @@ class Network(IP):
         2147483647
         '''
         if self.version() == 4:
-            return self.network_long() | (0xffffffffL - self.netmask_long())
+            return self.network_long() | (0xffffffff - self.netmask_long())
         else:
             return self.network_long() \
-                | (0xffffffffffffffffffffffffffffffffL - self.netmask_long())
+                | (0xffffffffffffffffffffffffffffffff - self.netmask_long())
 
     def host_first(self):
         '''
@@ -664,7 +677,8 @@ if __name__ == '__main__':
         ('::42', 64, ['::1', '1::']),
         ('2001:dead:beef:1:c01d:c01a::', 48, ['2001:dead:beef:babe::']),
         ('10.10.0.0', '255.255.255.0', ['10.10.0.20', '10.10.10.20']),
-        ('2001:dead:beef:1:c01d:c01a::', 'ffff:ffff:ffff::', ['2001:dead:beef:babe::']),
+        ('2001:dead:beef:1:c01d:c01a::',
+         'ffff:ffff:ffff::', ['2001:dead:beef:babe::']),
         ('10.10.0.0/255.255.240.0', None, ['10.10.0.20', '10.10.250.0']),
     ]
 
