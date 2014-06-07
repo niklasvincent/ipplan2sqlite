@@ -15,10 +15,14 @@
 # OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 #
 
-import sqlite3, os, sys
+import os
+import sys
+import sqlite3
 
-# Use the ipplan.db file generated in the parent directory when generate.py is done
-DB_FILE = os.path.abspath(os.path.join(os.path.dirname(__file__), '../../../ipplan.db'))
+# Use the ipplan.db file generated in the parent directory when
+# generate.py is done
+DB_FILE = os.path.abspath(os.path.join(os.path.dirname(__file__),
+                          '../../../ipplan.db'))
 
 if os.path.isfile(DB_FILE):
     try:
@@ -38,7 +42,13 @@ else:
     sys.exit(2)
 
 ## EXAMPLE USAGE, PLEASE REMOVE
-db.execute('''SELECT sql FROM sqlite_master WHERE type = "table" AND name = "network"''')
+db.execute("""SELECT
+                sql
+              FROM
+                sqlite_master
+              WHERE
+                type = 'table'
+                AND name = 'network'""")
 print str(db.fetchone()[0])
 db.execute('''SELECT * FROM network WHERE name LIKE "%CREW%"''')
 print db.fetchall()
