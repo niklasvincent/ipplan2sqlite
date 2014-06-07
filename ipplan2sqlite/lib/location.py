@@ -64,14 +64,14 @@ def switch_locations(t, n):
 
     if t.horizontal:
         for i in range(1, 2 * n, 2):
-            x = t.x_start + (t.width / n) / 2 * i
-            y = t.y_start + t.height / 2
+            x = t.x1 + (t.width / n) / 2 * i
+            y = t.y1 - t.height / 2
             locations.append((x, y))
             locations.reverse()
     else:
         for i in range(1, 2 * n, 2):
-            x = t.x_start + t.height / 2
-            y = t.y_start + (t.width / n) / 2 * i
+            x = t.x1 - t.height / 2
+            y = t.y1 + (t.width / n) / 2 * i
             locations.append((x, y))
 
     return locations
@@ -94,6 +94,7 @@ def table_location(table, tables):
     if horizontal:
         y1 += 5
         y2 -= 5
+        y_len += 5
 
     width = x_len if horizontal else y_len
     height = y_len if horizontal else x_len
