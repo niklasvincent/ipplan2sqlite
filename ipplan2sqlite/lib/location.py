@@ -18,9 +18,9 @@ def add_coordinates(seatmap, cursor):
 
     for hall in halls:
         table_coordinates = []
-        x_min = 10 ** 6
+        x_min = float("inf")
         y_max = 0
-        y_min = 10 ** 6
+        y_min = float("inf")
         for table in tables[hall].iterkeys():
             c = table_location(table, tables)
             table_coordinates.append((table, c))
