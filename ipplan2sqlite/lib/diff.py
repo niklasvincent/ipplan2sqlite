@@ -99,7 +99,3 @@ def compare_states(before, after, logging, output=sys.stdout, limit=10):
                     i += 1
                     if i >= limit:
                         break
-            
-
-        
-

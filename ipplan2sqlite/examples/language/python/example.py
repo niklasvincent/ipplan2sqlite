@@ -21,28 +21,28 @@ import sqlite3, os, sys
 DB_FILE = os.path.abspath(os.path.join(os.path.dirname(__file__), '../../../ipplan.db'))
 
 if os.path.isfile(DB_FILE):
-	try:
-		conn = sqlite3.connect(DB_FILE)
-		db = conn.cursor()
+    try:
+        conn = sqlite3.connect(DB_FILE)
+        db = conn.cursor()
 
-		db.execute('SELECT SQLITE_VERSION()')
-		data = db.fetchone()
-		print "SQLite version: %s" % data
-		
-	except sqlite3.Error as e:
-		print "An error occurred:", e.args[0]
-		sys.exit(1)
-		
+        db.execute('SELECT SQLITE_VERSION()')
+        data = db.fetchone()
+        print "SQLite version: %s" % data
+
+    except sqlite3.Error as e:
+        print "An error occurred:", e.args[0]
+        sys.exit(1)
+
 else:
-	print "No database file found: %s" % DB_FILE
-	sys.exit(2)
-	
+    print "No database file found: %s" % DB_FILE
+    sys.exit(2)
+
 ## EXAMPLE USAGE, PLEASE REMOVE
 db.execute('''SELECT sql FROM sqlite_master WHERE type = "table" AND name = "network"''')
 print str(db.fetchone()[0])
 db.execute('''SELECT * FROM network WHERE name LIKE "%CREW%"''')
 print db.fetchall()
-	
+
 #############################
 #   INSERT YOUR CODE HERE   #
 #############################
