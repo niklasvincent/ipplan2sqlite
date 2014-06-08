@@ -2,6 +2,7 @@
 
 from __future__ import with_statement
 import argparse
+import datetime
 import json
 import logging
 import re
@@ -58,6 +59,10 @@ args_parser.add_argument(
     "--seatmap",
     help="Path to seatmap file",
     required=True)
+args_parser.add_argument(
+    "--revision",
+    help="Which Subversion revision that triggered the generation",
+    required=False)
 args = args_parser.parse_args()
 
 # Adjust logging to desired verbosity
@@ -103,13 +108,21 @@ try:
     c.execute('SELECT SQLITE_VERSION()')
     data = c.fetchone()
     logging.debug("SQLite version: %s", data[0])
-except lite.Error as e:
+    # Add meta data
+except sqlite3.Error as e:
     logging.error('Error when opening database %s: %s', args.database, e)
     sys.exit(3)
 
 # Create tables
 logging.debug('Creating database tables')
 tables.create(conn)
+
+# Add meta data
+if args.revision:
+    c.execute("""INSERT INTO meta_data VALUES ('revision', '%d')""" %
+            int(args.revision))
+c.execute("""INSERT INTO meta_data VALUES ('time_generated', '%s')""" %
+            datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
 
 # Read the ipplan file
 logging.debug('Checking if ipplan file %s exists', args.ipplan)
