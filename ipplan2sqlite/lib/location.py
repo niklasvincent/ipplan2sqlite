@@ -52,6 +52,10 @@ def add_coordinates(seatmap, cursor):
                     sorted(switches[table]),
                     switch_locations(coordinates,
                                      n))
+                if table == "D44":
+                    print switches[table]
+                    print locations
+
                 for switch_name, location in locations:
                     row = [switch_name, location[0], location[1], table]
                     cursor.execute(
@@ -62,16 +66,17 @@ def add_coordinates(seatmap, cursor):
 def switch_locations(t, n):
     locations = []
 
+    padding = 2
     if t.horizontal:
         for i in range(1, 2 * n, 2):
             x = t.x1 + (t.width / n) / 2 * i
-            y = t.y1 - t.height / 2 - 1
+            y = t.y1 - t.height / 2 + padding
             locations.append((x, y))
-            locations.reverse()
+        locations.reverse()
     else:
         for i in range(1, 2 * n, 2):
             x = t.x1 - t.height / 2
-            y = t.y1 + (t.width / n) / 2 * i - 2
+            y = t.y1 + (t.width / n) / 2 * i - padding
             locations.append((x, y))
 
     return locations
@@ -91,13 +96,13 @@ def table_location(table, tables):
     y_start = min(y1, y2)
     horizontal = 1 if x_len > y_len else 0
 
-    if horizontal:
-        y1 += 5
-        y2 -= 5
-        y_len += 5
-
     width = x_len if horizontal else y_len
     height = y_len if horizontal else x_len
+
+    even = lambda x: round(x/2.)*2
+
+    width = even(width)
+    height = even(height)
 
     return Rectangle(x1, x2, y1, y2, x_start, y_start, width, height,
                      horizontal)
