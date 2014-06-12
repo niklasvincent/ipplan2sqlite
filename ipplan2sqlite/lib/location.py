@@ -49,7 +49,7 @@ def add_coordinates(seatmap, cursor):
             n = len(switches.get(table, []))
             if n:
                 locations = zip(
-                    switches[table],
+                    sorted(switches[table]),
                     switch_locations(coordinates,
                                      n))
                 for switch_name, location in locations:
