@@ -53,9 +53,9 @@ def add_coordinates(seatmap, cursor):
                     switch_locations(coordinates,
                                      n))
                 for switch_name, location in locations:
-                    row = [switch_name, location[0], location[1]]
+                    row = [switch_name, location[0], location[1], table]
                     cursor.execute(
-                        'INSERT INTO switch_coordinates VALUES(?, ?, ?)',
+                        'INSERT INTO switch_coordinates VALUES(?, ?, ?, ?)',
                         row)
 
 
@@ -65,13 +65,13 @@ def switch_locations(t, n):
     if t.horizontal:
         for i in range(1, 2 * n, 2):
             x = t.x1 + (t.width / n) / 2 * i
-            y = t.y1 - t.height / 2
+            y = t.y1 - t.height / 2 - 1
             locations.append((x, y))
             locations.reverse()
     else:
         for i in range(1, 2 * n, 2):
             x = t.x1 - t.height / 2
-            y = t.y1 + (t.width / n) / 2 * i
+            y = t.y1 + (t.width / n) / 2 * i - 2
             locations.append((x, y))
 
     return locations

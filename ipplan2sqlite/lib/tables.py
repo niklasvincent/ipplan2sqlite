@@ -89,7 +89,8 @@ def create(conn):
     c.execute('''CREATE TABLE switch_coordinates(
     name TEXT,
     x INTEGER,
-    y INTEGER)''')
+    y INTEGER,
+    table_name TEXT)''')
 
     # Meta data
     c.execute('''CREATE TABLE meta_data(name TEXT, value TEXT)''')
