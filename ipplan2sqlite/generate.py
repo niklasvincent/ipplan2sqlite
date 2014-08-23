@@ -5,10 +5,11 @@ import argparse
 import datetime
 import json
 import logging
-import re
 import os
 import platform
+import re
 import sys
+import yaml
 
 root = logging.getLogger()
 ch = logging.StreamHandler(sys.stdout)
@@ -50,11 +51,8 @@ args_parser.add_argument(
     "--database",
     help="Path to final SQLite database",
     required=True)
-args_parser.add_argument(
-    "--services",
-    help="Path to services file",
+args_parser.add_argument("--manifest", help="Path to manifest file",
     required=True)
-args_parser.add_argument("--flows", help="Path to flows file", required=True)
 args_parser.add_argument(
     "--seatmap",
     help="Path to seatmap file",
@@ -147,52 +145,39 @@ parser.parse(lines, c)
 logging.debug('Adding custom networks')
 networks.add_all(c)
 
-# Read the services file
-logging.debug('Checking if services file %s exists', args.services)
-if not os.path.isfile(args.services):
-    logging.error('No such services file: %s', args.services)
+# Read the manifest file
+logging.debug('Checking if manifest file %s exists', args.manifest)
+if not os.path.isfile(args.manifest):
+    logging.error('No such manifest file: %s', args.manifest)
     sys.exit(5)
-logging.debug('Found services file %s', args.services)
-logging.debug('Parsing services file as JSON')
+logging.debug('Found manifest file %s', args.manifest)
+logging.debug('Parsing manifest file as JSON')
 try:
-    with open(args.services, 'r') as f:
-        services = json.loads(f.read())
+    with open(args.manifest, 'r') as f:
+        manifest = yaml.safe_load(f.read())
 except Exception as e:
     logging.error(
-        'Could not parse services file %s as JSON: %s',
-        args.services,
+        'Could not parse manifest file %s as JSON: %s',
+        args.manifest,
         e)
     sys.exit(6)
 
-# Add services to database
-logging.debug('Adding services to database')
+# Add manifest to database
+logging.debug('Adding manifest to database')
 try:
-    firewall.add_services(services, c)
+    firewall.add_services(manifest['services'], c)
 except Exception as e:
     logging.error('Could not add services to database: %s', e)
-
-# Read the flows file
-logging.debug('Checking if flows file \'%s\' exists', args.flows)
-if not os.path.isfile(args.flows):
-    logging.error('No such flows file: \'%s\'', args.flows)
-    sys.exit(7)
-logging.debug('Found flows file \'%s\'', args.flows)
-logging.debug('Parsing flows file as JSON')
-try:
-    with open(args.flows, 'r') as f:
-        flows = json.loads(f.read())
-except Exception as e:
-    logging.error(
-        'Could not parse flows file \'%s\' as JSON: %s',
-        args.flows,
-        e)
 
 # Add flows to database
 try:
-    firewall.add_flows(flows, c)
+    firewall.add_flows(manifest['flows'], c)
 except Exception as e:
-    logging.error('Could not add services to database: %s', e)
+    logging.error('Could not add flows to database: %s', e)
     sys.exit(8)
+
+# Register packages
+firewall.add_packages(manifest['packages'], c)
 
 # Build firewall
 logging.debug('Building firewall rules')

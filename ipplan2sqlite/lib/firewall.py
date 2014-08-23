@@ -1,25 +1,26 @@
+import collections
 import re
-import json
 
+# Hack to not save packages to database (which we could do if we want to)
+_packages = None
 
 def add_services(services, c):
-    for service in services:
-        row = [str(
-               service['service']),
-               str(service['description']),
-               str(service['destport']),
-               str(service['sourceport'])]
+    for service, data in services.iteritems():
+        row = [service,
+               data['description'],
+               ','.join(data['destport']),
+               ','.join(data.get('sourceport',[])) or None]
         c.execute('INSERT INTO service VALUES (NULL, ?, ?, ?, ?)', row)
 
 
 def add_flows(flows, c):
     for flow in flows:
-        row = [str(flow['name']), str(flow['description'])]
+        row = [flow, flow]
         c.execute('INSERT INTO flow VALUES (NULL, ?, ?)', row)
-    c.execute(
-        'INSERT INTO flow VALUES (NULL, ?, ?)',
-        ['normal', 'normal flow'])
 
+def add_packages(packages, c):
+    global _packages
+    _packages = packages
 
 def build(c):
     client_server(c)
@@ -28,25 +29,45 @@ def build(c):
     world(c)
     return
 
+def fetch_nodes_and_services(access, c, match=None):
+    access_to_sql_map = {
+        'server': 's',
+        'client': 'c',
+        'world': 'w',
+        'local': 'l',
+        'public': 'p'
+    }
+    c.execute('SELECT node_id, value FROM option WHERE name = ?', (
+        access_to_sql_map[access], ))
+    explicit = c.fetchall()
+
+    # Extract service flows from packages
+    c.execute('SELECT node_id, value FROM option WHERE name = ?', ('pkg', ))
+    package_options = c.fetchall()
+
+    nodes = collections.defaultdict(set)
+    for node_id, flow in explicit:
+        nodes[node_id].add(flow)
+
+    for node_id, package_name in package_options:
+        global _packages
+        package = _packages[package_name]
+        nodes[node_id] |= set(package.get(access, []))
+
+    for node, services in nodes.iteritems():
+        for service in services:
+            if match and service != match:
+                continue
+            yield (node, service)
 
 def client_server(c):
     # Select all servers
-    c.execute('SELECT node_id, value FROM option WHERE name = ?', ('s', ))
-    servers = c.fetchall()
-
-    for server in servers:
+    for server in fetch_nodes_and_services('server', c):
         to_node_id = int(server[0])
-
         service = parse_service(c, server[1])
 
-        # Select all clients
-        c.execute(
-            'SELECT node_id FROM option WHERE name = ? AND value = ?',
-            ('c',
-             service['full_name']))
-        clients = c.fetchall()
-
-        for client in clients:
+        for client in fetch_nodes_and_services('client', c,
+                                               match=service['full_name']):
             from_node_id = int(client[0])
             row = [from_node_id,
                    to_node_id,
@@ -62,9 +83,7 @@ def client_server(c):
 
 def local(c):
     # Select all servers providing services to their VLAN
-    c.execute('SELECT node_id, value FROM option WHERE name = ?', ('l', ))
-    servers = c.fetchall()
-    for server in servers:
+    for server in fetch_nodes_and_services('local', c):
         to_node_id = int(server[0])
 
         # What service?
@@ -93,9 +112,7 @@ def public(c):
         network_node_ids[network] = get_network_node_id(c, network)
 
     # Select all servers providing services to their VLAN
-    c.execute('SELECT node_id, value FROM option WHERE name = ?', ('p', ))
-    servers = c.fetchall()
-    for server in servers:
+    for server in fetch_nodes_and_services('public', c):
         to_node_id = int(server[0])
 
         # What service?
@@ -120,9 +137,7 @@ def world(c):
     from_node_id = get_network_node_id(c, "ANY")
 
     # Select all servers providing services to their VLAN
-    c.execute('SELECT node_id, value FROM option WHERE name = ?', ('w', ))
-    servers = c.fetchall()
-    for server in servers:
+    for server in fetch_nodes_and_services('world', c):
         to_node_id = int(server[0])
 
         # What service?
@@ -143,6 +158,9 @@ def parse_service(c, service):
     service_version = str(re.compile(r'[^\d.]+').sub('', service))
     is_ipv4 = 0
     is_ipv6 = 0
+    if not service_version:
+        is_ipv4 = 1
+        is_ipv6 = 1
     if "4" in service_version:
         is_ipv4 = 1
     if "6" in service_version:
@@ -154,7 +172,7 @@ def parse_service(c, service):
         flow_name = service_name.split('-')[0]
         service_name = service_name.split('-')[-1]
     else:
-        flow_name = 'normal'
+        flow_name = 'default'
     flow_id = get_flow_id(c, flow_name)
 
     # Service?

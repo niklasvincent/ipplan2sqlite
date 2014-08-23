@@ -75,9 +75,9 @@ def compare_states(before, after, logging, output=sys.stdout, limit=10):
             _print(bcolors.FAIL, dropped_table, output)
         changed = True
     if len(new_tables) > 0:
-        output.write('Added %d table(s):' % (len(added_tables)))
-        for added_table in added_tables:
-            _print(bcolors.OKGREEN, dropped_table, output)
+        output.write('Added %d table(s):' % (len(new_tables)))
+        for added_table in new_tables:
+            _print(bcolors.OKGREEN, added_table, output)
         changed = True
 
     # We can only do diff magic on tables that were in both databases

@@ -52,10 +52,6 @@ def add_coordinates(seatmap, cursor):
                     sorted(switches[table]),
                     switch_locations(coordinates,
                                      n))
-                if table == "D44":
-                    print switches[table]
-                    print locations
-
                 for switch_name, location in locations:
                     row = [switch_name, location[0], location[1], table]
                     cursor.execute(

@@ -16,8 +16,10 @@ class TestFirewall(BaseTestCase, unittest.TestCase):
 
     def setUp(self):
         super(TestFirewall, self).setUp()
-        firewall.add_services(self._load_JSON('data/services.json'), self.c)
-        firewall.add_flows(self._load_JSON('data/flows.json'), self.c)
+        manifest = self._load_YAML('data/manifest.yml')
+        firewall.add_services(manifest['services'], self.c)
+        firewall.add_flows(manifest['flows'], self.c)
+        firewall.add_packages(manifest['packages'], self.c)
         networks.add_all(self.c)
         parser.parse(self._load('data/masterNetwork.txt'), self.c)
 
@@ -27,6 +29,9 @@ class TestFirewall(BaseTestCase, unittest.TestCase):
         firewall.build(self.c)
         rules = self._query('SELECT * FROM firewall_rule_ip_level')
         self.assertEquals(len(rules), 1, "Wrong number of firewall rules")
+
+        # TODO(bluecmd) Forgive nl for I have sinned.
+        # Write unit tests for pkg=
 
         rule = self._query(
             """SELECT
@@ -41,7 +46,7 @@ class TestFirewall(BaseTestCase, unittest.TestCase):
             rule[1],
             'ddns1.event.dreamhack.se',
             "Wrong destination host")
-        self.assertEquals(rule[2], 'normal', "Wrong flow")
+        self.assertEquals(rule[2], 'default', "Wrong flow")
         self.assertEquals(
             rule[3],
             '2022/tcp',
@@ -86,7 +91,7 @@ class TestFirewall(BaseTestCase, unittest.TestCase):
             rule[1],
             'www.event.dreamhack.se',
             "Wrong destination host")
-        self.assertEquals(rule[2], 'normal', "Wrong flow")
+        self.assertEquals(rule[2], 'default', "Wrong flow")
         self.assertEquals(
             rule[3],
             '80/tcp',

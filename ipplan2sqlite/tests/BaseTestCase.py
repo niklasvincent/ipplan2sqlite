@@ -2,6 +2,7 @@ import json
 import os
 import sqlite3
 import sys
+import yaml
 
 path = os.path.abspath(os.path.join(os.path.dirname(__file__), '../lib'))
 sys.path.insert(1, path)
@@ -24,6 +25,12 @@ class BaseTestCase(object):
         f = os.path.abspath(os.path.join(os.path.dirname(__file__), f))
         with open(f, 'r') as f:
             data = json.load(f)
+        return data
+
+    def _load_YAML(self, f):
+        f = os.path.abspath(os.path.join(os.path.dirname(__file__), f))
+        with open(f, 'r') as f:
+            data = yaml.load(f.read())
         return data
 
     def setUp(self):

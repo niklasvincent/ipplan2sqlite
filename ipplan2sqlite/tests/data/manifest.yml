@@ -1,0 +1,239 @@
+flows:
+  - default
+  - jump
+  - tech
+  - wifi
+  - ddns  # used to sync dhcp state
+  - chill
+  - varberg
+
+services:
+  amm:
+    description: ibm management
+    destport:
+      - 22/tcp
+      - 80/tcp
+      - 443/tcp
+      - 1044/tcp
+      - 3900/tcp
+  carbon:
+    description: dhmon - carbon
+    destport:
+      - 2003/tcp
+  cass:
+    description: dhmon - cassandra client
+    destport:
+      - 9042/tcp
+  cassctrl:
+    description: dhmon - cassandra control
+    destport:
+      - 7000/tcp
+      - 7001/tcp
+  cyanite:
+    description: dhmon - cyanite
+    destport:
+      - 2099/tcp
+  dhcp:
+    description: dhcp
+    destport:
+      - 67/udp
+    sourceport:
+      - 68/udp
+  dhssh:
+    description: dreamhack ssh
+    destport:
+      - 2022/tcp
+  dns:
+    description: dns
+    destport:
+      - 53/udp
+      - 53/tcp
+  es:
+    description: dhmon - elasticsearch
+    destport:
+      - 9200/tcp
+  escluster:
+    description: dhmon - elasticsearch cluster communication
+    destport:
+      - 9300/tcp
+  graphiteapi:
+    description: dhmon - graphite api
+    destport:
+      - 8000/tcp
+  http:
+    description: the webz is here
+    destport:
+      - 80/tcp
+  https:
+    description: the webz is here
+    destport:
+      - 443/tcp
+  ilo:
+    description: hp management
+    destport:
+      - 22/tcp
+      - 23/tcp
+      - 80/tcp
+      - 443/tcp
+      - 17988/tcp
+      - 17990/tcp
+  irc:
+    description: irc
+    destport:
+      - 6667/tcp
+  irclog:
+    description: syslog irc bot
+    destport:
+      - 50007/udp
+      - 50007/tcp
+  ircs:
+    description: ssl-irc
+    destport:
+      - 9000/tcp
+  ldap:
+    description: ldap
+    destport:
+      - 389/tcp
+  ldaps:
+    description: ldaps
+    destport:
+      - 636/tcp
+  log:
+    description: syslog
+    destport:
+      - 514/udp
+      - 514/tcp
+  minecraft:
+    description: minecraft
+    destport:
+      - 25565/tcp
+  modb:
+    description: the mongo database
+    destport:
+      - 27017/tcp
+  mydb:
+    description: the mysql database
+    destport:
+      - 3306/tcp
+  nfsfour:
+    description: nfsv4
+    destport:
+      - 2049/tcp
+  ntp:
+    description: time
+    destport:
+      - 123/udp
+      - 123/tcp
+  packetlogic:
+    description: procera stuff
+    destport:
+      - 42000-42010/tcp
+      - 8443/tcp
+      - 443/tcp
+  pgdb:
+    description: the postgres database
+    destport:
+      - 5432/tcp
+      - 5432/udp
+  racc:
+    description: radius accounting
+    destport:
+      - 1813/tcp
+      - 1813/udp
+  ran:
+    description: rancid
+    destport:
+      - 22/tcp
+  rdp:
+    description: rdp port
+    destport:
+      - 3389/tcp
+  redb:
+    description: redis
+    destport:
+      - 6379/tcp
+  rsync:
+    description: rsync
+    destport:
+      - 873/tcp
+  sip:
+    description: tele
+    destport:
+      - 5060/tcp
+      - 5060/udp
+  smtp:
+    description: mail
+    destport:
+      - 25/tcp
+  snmpc:
+    description: snmpc client - server
+    destport:
+      - 165-168/tcp
+  snmptrap:
+    description: snmp trap ports
+    destport:
+      - 162/tcp
+      - 162/udp
+  ssh:
+    description: standard ssh
+    destport:
+      - 22/tcp
+  tac:
+    description: tacacs
+    destport:
+      - 49-51/tcp
+  tftp:
+    description: tftp ports
+    destport:
+      - 69/udp
+  vsphere:
+    description: vmware management
+    destport:
+      - 80/tcp
+      - 443/tcp
+      - 901-902/tcp
+
+packages:
+  # Use pkg=-default for no default packages
+  default:
+    - dhssh
+    - ldap-client
+    - syslog-client
+
+  # dummy-service:
+  #  server:
+  #    - my-service[4|6|46] (default is 46)
+  #  local:
+  #  client:
+  #  public:
+  #  world:
+
+  dhmon-storage:
+    server:
+      - cass
+      - cassctrl
+      - escluster
+      - snmptrap
+    client:
+      - cass
+      - cassctrl
+      - carbon
+      - escluster
+  tac:
+    server:
+      - tac4
+  www-pub:
+    world:
+      - http
+  dns:
+    public:
+      - dns
+  dhssh:
+    server:
+      - dhssh
+  syslog-client:
+    client:
+      - log
+  ldap-client:
+    client:
+      - ldaps
