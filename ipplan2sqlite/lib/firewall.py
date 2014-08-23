@@ -30,6 +30,7 @@ def build(c):
     return
 
 def fetch_nodes_and_services(access, c, match=None):
+    global _packages
     access_to_sql_map = {
         'server': 's',
         'client': 'c',
@@ -50,9 +51,16 @@ def fetch_nodes_and_services(access, c, match=None):
         nodes[node_id].add(flow)
 
     for node_id, package_name in package_options:
-        global _packages
         package = _packages[package_name]
         nodes[node_id] |= set(package.get(access, []))
+
+    for node_id, packages in nodes.iteritems():
+        if '-default' in packages:
+            packages.remove('-default')
+        elif 'default' in _packages:
+            for package_name in _packages['default']:
+                package = _packages[package_name]
+                nodes[node_id] |= set(package.get(access, []))
 
     for node, services in nodes.iteritems():
         for service in services:
