@@ -2,8 +2,8 @@
 # Assigned PI Space   
 ####################
 
-#@ IPV4-NET	77.80.128.0/17
-#@ IPV6-NET	2001:67c:24d8::/48
+#@ IPV4-EVENT-NET	77.80.128.0/17
+#@ IPV6-EVENT-NET	2001:67c:24d8::/48
 
 #For IPV6 use VLAN-ID as subnet then /64
 #For example: VLAN950 -> 2001:67c:24d8:950::/64

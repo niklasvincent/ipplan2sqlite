@@ -41,7 +41,8 @@ class TestParser(BaseTestCase, unittest.TestCase):
         networks = self._query('SELECT * FROM network')
         self.assertEquals(len(networks), 1, "Missing master network")
         self.assertEquals(networks[0][0], 1, "Wrong node id")
-        self.assertEquals(networks[0][1], 'DREAMHACK', "Wrong network name")
+        self.assertEquals(networks[0][1], 'EVENT@DREAMHACK',
+            "Wrong network name")
 
     def testParseNetworkAndHost(self):
         parser.parse(self._load('data/testParseNetworkAndHost.txt'), self.c)
@@ -89,7 +90,7 @@ class TestParser(BaseTestCase, unittest.TestCase):
         vlan = parser.network(network_line.split(), self.c, None)
         network = self._query('SELECT * FROM network')[0]
         self.assertEquals(network[0], 1, "Wrong node id")
-        self.assertEquals(network[1], 'TECH-SRV-1-INT', "Wrong network name")
+        self.assertEquals(network[1], 'EVENT@TECH-SRV-1-INT', "Wrong network name")
         self.assertEquals(network[2], 921, "Wrong VLAN")
         self.assertEquals(network[3], 'D-FW-V', "Wrong terminator")
         self.assertEquals(network[4], 1297147648, "Wrong IPv4 long")

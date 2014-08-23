@@ -7,16 +7,32 @@ from binascii import hexlify
 
 MODULE = sys.modules[__name__]
 
-SYNTAX = {"^#@": "master_network", "^#\$": "host", "^[A-Z]": "network"}
+SYNTAX = {
+  "^#@": "master_network",
+  "^#\$": "host",
+  "^[A-Z]": "network"
+}
 
-IPV6_BASE_ADDR = "2001:67c:24d8"
+_current_domain = None
+_current_v6_base = None
+_domains = set()
+
+def get_domains():
+  return list(_domains)
 
 def master_network(l, c, r):
+    global _current_domain
+    global _current_v6_base
     if r is not None:
         node_id = node(c)
         name = 'DREAMHACK'
         vlan = 0
         terminator = ''
+
+        # Set current domain
+        domain = re.match(r'IPV4-([A-Z0-9]+)-NET', r[1]).group(1).upper()
+        _current_domain = domain
+        _domains.add(domain)
 
         # IPv4
         ipv4 = r[2]
@@ -27,9 +43,13 @@ def master_network(l, c, r):
 
         # IPv6
         ipv6 = l[2]
+        _current_v6_base = ipv6.split('::', 1)[0]
+
         last_digits = int(str(ipv4_gateway).split('.')[-1])
         ipv6_netmask = 64
-        ipv6_gateway = "%s:::%d" % (IPV6_BASE_ADDR, last_digits)
+        ipv6_gateway = "%s::%d" % (_current_v6_base, last_digits)
+
+        name = '%s@%s' % (_current_domain, name)
 
         row = [node_id, name, vlan, terminator, ip2long(ipv4, 4),
                str(ipv4), str(ipv6), ip2long(
@@ -53,7 +73,7 @@ def host(l, c, vlan):
     name = l[1]
     ipv4_addr = l[2]
     last_digits = int(str(ipv4_addr).split('.')[-1])
-    ipv6_addr = "%s:%d::%d" % (IPV6_BASE_ADDR, vlan, last_digits)
+    ipv6_addr = "%s:%d::%d" % (_current_v6_base, vlan, last_digits)
 
     row = [
         node_id,
@@ -86,9 +106,11 @@ def network(l, c, r):
 
     # IPv6
     last_digits = int(str(ipv4_gateway).split('.')[-1])
-    ipv6 = "%s:%d::/64" % (IPV6_BASE_ADDR, vlan)
+    ipv6 = "%s:%d::/64" % (_current_v6_base, vlan)
     ipv6_netmask = 64
-    ipv6_gateway = "%s:%d::%d" % (IPV6_BASE_ADDR, vlan, last_digits)
+    ipv6_gateway = "%s:%d::%d" % (_current_v6_base, vlan, last_digits)
+
+    name = '%s@%s' % (_current_domain, name)
 
     row = [node_id, name, vlan, terminator, ip2long(ipv4, 4),
            str(ipv4), str(ipv6), ip2long(ipv4_netmask, 4), str(ipv4_netmask),

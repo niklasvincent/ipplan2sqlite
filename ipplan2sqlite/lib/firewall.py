@@ -72,7 +72,7 @@ def client_server(c):
     # Select all servers
     for server in fetch_nodes_and_services('server', c):
         to_node_id = int(server[0])
-        service = parse_service(c, server[1])
+        service = parse_service(c, to_node_id, server[1])
 
         for client in fetch_nodes_and_services('client', c,
                                                match=service['full_name']):
@@ -95,7 +95,7 @@ def local(c):
         to_node_id = int(server[0])
 
         # What service?
-        service = parse_service(c, server[1])
+        service = parse_service(c, to_node_id, server[1])
 
         # Which VLAN is this server on?
         c.execute(
@@ -116,7 +116,7 @@ def local(c):
 def public(c):
     # List public networks
     network_node_ids = {}
-    for network in ['DREAMHACK', 'RFC_10', 'RFC_172', 'RFC_192']:
+    for network in ['EVENT@DREAMHACK', 'RFC_10', 'RFC_172', 'RFC_192']:
         network_node_ids[network] = get_network_node_id(c, network)
 
     # Select all servers providing services to their VLAN
@@ -124,7 +124,7 @@ def public(c):
         to_node_id = int(server[0])
 
         # What service?
-        service = parse_service(c, server[1])
+        service = parse_service(c, to_node_id, server[1])
 
         for network in network_node_ids:
             from_node_id = network_node_ids[network]
@@ -149,7 +149,7 @@ def world(c):
         to_node_id = int(server[0])
 
         # What service?
-        service = parse_service(c, server[1])
+        service = parse_service(c, to_node_id, server[1])
         row = [from_node_id,
                to_node_id,
                service['service_id'],
@@ -162,8 +162,17 @@ def world(c):
     return
 
 
-def parse_service(c, service):
+def parse_service(c, node_id, service):
     service_version = str(re.compile(r'[^\d.]+').sub('', service))
+
+    c.execute(
+        'SELECT network.name FROM network JOIN host '
+        'ON network.node_id = host.network_id WHERE host.node_id = ? OR '
+        'network.node_id = ?',
+        (node_id, node_id))
+    network = c.fetchone()[0]
+    domain = network.split('@')[0]
+
     is_ipv4 = 0
     is_ipv6 = 0
     if not service_version:
@@ -180,7 +189,7 @@ def parse_service(c, service):
         flow_name = service_name.split('-')[0]
         service_name = service_name.split('-')[-1]
     else:
-        flow_name = 'default'
+        flow_name = domain.lower()
     flow_id = get_flow_id(c, flow_name)
 
     # Service?

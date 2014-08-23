@@ -60,7 +60,7 @@ def _print(color, msg, output):
     output.write(color + msg + bcolors.ENDC + "\n")
 
 
-def compare_states(before, after, logging, output=sys.stdout, limit=10):
+def compare_states(before, after, logging, output=sys.stdout, limit=10000):
     # Did we detect _any_ changes?
     changed = False
 

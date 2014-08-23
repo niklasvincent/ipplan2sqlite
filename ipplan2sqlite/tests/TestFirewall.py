@@ -22,6 +22,7 @@ class TestFirewall(BaseTestCase, unittest.TestCase):
         firewall.add_packages(manifest['packages'], self.c)
         networks.add_all(self.c)
         parser.parse(self._load('data/masterNetwork.txt'), self.c)
+        firewall.add_flows([x.lower() for x in parser.get_domains()], self.c)
 
     def testServerClientRule(self):
         lines = self._load('data/testServerClientRules.txt')
@@ -46,7 +47,7 @@ class TestFirewall(BaseTestCase, unittest.TestCase):
             rule[1],
             'ddns1.event.dreamhack.se',
             "Wrong destination host")
-        self.assertEquals(rule[2], 'default', "Wrong flow")
+        self.assertEquals(rule[2], 'event', "Wrong flow")
         self.assertEquals(
             rule[3],
             '2022/tcp',
@@ -62,7 +63,8 @@ class TestFirewall(BaseTestCase, unittest.TestCase):
             """SELECT
                from_node_name, to_node_name, flow_name, service_dst_ports
                FROM
-               firewall_rule_ip_level WHERE from_node_name = 'DREAMHACK'"""
+               firewall_rule_ip_level
+               WHERE from_node_name = 'EVENT@DREAMHACK'"""
         )
         self.assertEquals(len(rules), 2, "Wrong number of firewall rules")
 
@@ -70,7 +72,7 @@ class TestFirewall(BaseTestCase, unittest.TestCase):
             """SELECT
                from_node_name, to_node_name, flow_name, service_dst_ports
                FROM firewall_rule_ip_level
-               WHERE from_node_name = 'DREAMHACK'
+               WHERE from_node_name = 'EVENT@DREAMHACK'
                AND service_dst_ports = '123/udp,123/tcp'"""
         )
         self.assertEquals(len(rule), 1, "Wrong number of firewall rules")
@@ -91,7 +93,7 @@ class TestFirewall(BaseTestCase, unittest.TestCase):
             rule[1],
             'www.event.dreamhack.se',
             "Wrong destination host")
-        self.assertEquals(rule[2], 'default', "Wrong flow")
+        self.assertEquals(rule[2], 'event', "Wrong flow")
         self.assertEquals(
             rule[3],
             '80/tcp',
@@ -105,7 +107,8 @@ class TestFirewall(BaseTestCase, unittest.TestCase):
 
         rule = rules[0]
         self.assertEquals(rule[0], 1, "Wrong rule id")
-        self.assertEquals(rule[2], 'TECH-SRV-6-JUMPNET', "Wrong source host")
+        self.assertEquals(rule[2], 'EVENT@TECH-SRV-6-JUMPNET',
+            "Wrong source host")
         self.assertEquals(
             rule[3],
             '77.80.231.128/28',

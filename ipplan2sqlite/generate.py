@@ -174,6 +174,7 @@ except Exception as e:
 # Add flows to database
 try:
     firewall.add_flows(manifest['flows'], c)
+    firewall.add_flows([x.lower() for x in parser.get_domains()], c)
 except Exception as e:
     logging.error('Could not add flows to database: %s', e)
     sys.exit(8)
