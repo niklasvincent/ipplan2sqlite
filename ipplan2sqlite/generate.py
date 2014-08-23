@@ -46,7 +46,6 @@ args_parser.add_argument(
     "--debug",
     help="Increase output verbosity",
     action="store_true")
-args_parser.add_argument("--ipplan", help="Path to ipplan file", required=True)
 args_parser.add_argument(
     "--database",
     help="Path to final SQLite database",
@@ -61,6 +60,8 @@ args_parser.add_argument(
     "--revision",
     help="Which Subversion revision that triggered the generation",
     required=False)
+args_parser.add_argument(
+    'ipplans', metavar='ipplan', nargs='+', help='ipplan file')
 args = args_parser.parse_args()
 
 # Adjust logging to desired verbosity
@@ -123,23 +124,24 @@ c.execute("""INSERT INTO meta_data VALUES ('time_generated', '%s')""" %
             datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
 
 # Read the ipplan file
-logging.debug('Checking if ipplan file %s exists', args.ipplan)
-if not os.path.isfile(args.ipplan):
-    logging.error('No such ipplan file: %s', args.ipplan)
-    sys.exit(4)
-logging.debug('Found ipplan file %s', args.ipplan)
+for ipplan in args.ipplans:
+  logging.debug('Checking if ipplan file %s exists', ipplan)
+  if not os.path.isfile(ipplan):
+      logging.error('No such ipplan file: %s', ipplan)
+      sys.exit(4)
+  logging.debug('Found ipplan file %s', ipplan)
 
-# Parse ipplan
-logging.debug('Parsing lines in %s', args.ipplan)
-try:
-    with open(args.ipplan, 'r') as f:
-        lines = f.readlines()
-except Exception as e:
-    logging.error('Could not parse ipplan file %s: %s', args.ipplan, e)
+  # Parse ipplan
+  logging.debug('Parsing lines in %s', ipplan)
+  try:
+      with open(ipplan, 'r') as f:
+          lines = f.readlines()
+  except Exception as e:
+      logging.error('Could not parse ipplan file %s: %s', ipplan, e)
 
-# Parse ipplan
-logging.debug('Parsing ipplan')
-parser.parse(lines, c)
+  # Parse ipplan
+  logging.debug('Parsing ipplan')
+  parser.parse(lines, c)
 
 # Add custom networks
 logging.debug('Adding custom networks')
