@@ -46,23 +46,32 @@ def fetch_nodes_and_services(access, c, match=None):
     c.execute('SELECT node_id, value FROM option WHERE name = ?', ('pkg', ))
     package_options = c.fetchall()
 
-    nodes = collections.defaultdict(set)
+    node_services = collections.defaultdict(set)
     for node_id, flow in explicit:
-        nodes[node_id].add(flow)
+        node_services[node_id].add(flow)
 
+    nodes = collections.defaultdict(set)
     for node_id, package_name in package_options:
-        package = _packages[package_name]
-        nodes[node_id] |= set(package.get(access, []))
+        nodes[node_id].add(package_name)
 
     for node_id, packages in nodes.iteritems():
         if '-default' in packages:
             packages.remove('-default')
         elif 'default' in _packages:
             for package_name in _packages['default']:
-                package = _packages[package_name]
-                nodes[node_id] |= set(package.get(access, []))
+                nodes[node_id].add(package_name)
+        # Remove blacklisted packages
+        for package in [x[1:] for x in packages if x[0] == '-']:
+            packages.remove('-' + package)
+            packages.remove(package)
 
-    for node, services in nodes.iteritems():
+    # Convert packages to services
+    for node, packages in nodes.iteritems():
+        for package_name in packages:
+            package = _packages[package_name]
+            node_services[node] |= set(package.get(access, []))
+
+    for node, services in node_services.iteritems():
         for service in services:
             if match and service != match:
                 continue
