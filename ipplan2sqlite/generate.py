@@ -55,7 +55,7 @@ args_parser.add_argument("--manifest", help="Path to manifest file",
 args_parser.add_argument(
     "--seatmap",
     help="Path to seatmap file",
-    required=True)
+    required=False)
 args_parser.add_argument(
     "--revision",
     help="Which Subversion revision that triggered the generation",
@@ -186,24 +186,26 @@ firewall.add_packages(manifest['packages'], c)
 logging.debug('Building firewall rules')
 firewall.build(c)
 
-# Read the seat map file
-logging.debug('Checking of seatmap file \'%s\' exists', args.seatmap)
-if not os.path.isfile(args.seatmap):
-    logging.error('No such seatmap file: \'%s\'', args.seatmap)
-    sys.exit(9)
-logging.debug('Found seatmap file \'%s\'', args.seatmap)
-logging.debug('Parsing seatmap file as JSON')
-try:
-    with open(args.seatmap, 'r') as f:
-        seatmap = json.loads(f.read())
-except Exception as e:
-    logging.error(
-        'Could not parse seatmap file \'%s\' as JSON: %s',
-        args.seatmap,
-        e)
+# Support running without seatmap for validation and testing purposes
+if args.seatmap:
+    # Read the seat map file
+    logging.debug('Checking of seatmap file \'%s\' exists', args.seatmap)
+    if not os.path.isfile(args.seatmap):
+        logging.error('No such seatmap file: \'%s\'', args.seatmap)
+        sys.exit(9)
+    logging.debug('Found seatmap file \'%s\'', args.seatmap)
+    logging.debug('Parsing seatmap file as JSON')
+    try:
+        with open(args.seatmap, 'r') as f:
+            seatmap = json.loads(f.read())
+    except Exception as e:
+        logging.error(
+            'Could not parse seatmap file \'%s\' as JSON: %s',
+            args.seatmap,
+            e)
 
-# Build location mapping
-location.add_coordinates(seatmap, c)
+    # Build location mapping
+    location.add_coordinates(seatmap, c)
 
 # Diff the database before and after
 if has_previous_db:

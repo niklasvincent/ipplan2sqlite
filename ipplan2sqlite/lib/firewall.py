@@ -213,14 +213,14 @@ def parse_service(c, node_id, service):
 
 def get_flow_id(c, flow_name):
     c.execute('SELECT id FROM flow WHERE name = ?', (flow_name, ))
-    return int(c.fetchone()[0])
+    return next(iter(c.fetchone() or ()), None)
 
 
 def get_service_id(c, service_name):
     c.execute('SELECT id FROM service WHERE name = ?', (service_name, ))
-    return int(c.fetchone()[0])
+    return next(iter(c.fetchone() or ()), None)
 
 
 def get_network_node_id(c, network_name):
     c.execute('SELECT node_id FROM network WHERE name = ?', (network_name,))
-    return c.fetchone()[0]
+    return next(iter(c.fetchone() or ()), None)
