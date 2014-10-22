@@ -148,7 +148,7 @@ def options(c, node_id, options):
         option = option.split("=")
         name = option[0]
         if len(option) == 2:
-            for value in split_values(option[1]):
+            for value in split_value(option[1]):
                 row = [node_id, name, value]
                 c.execute('INSERT INTO option VALUES(NULL, ?, ?, ?)', row)
         else:
