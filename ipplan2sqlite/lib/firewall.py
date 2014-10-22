@@ -68,7 +68,7 @@ def fetch_nodes_and_services(access, c, match=None):
     # Convert packages to services
     for node, packages in nodes.iteritems():
         for package_name in packages:
-            package = _packages[package_name] or {}
+            package = _packages[package_name.split('(')[0]] or {}
             node_services[node] |= set(package.get(access, []))
 
     for node, services in node_services.iteritems():
