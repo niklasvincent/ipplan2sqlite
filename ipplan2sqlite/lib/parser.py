@@ -125,13 +125,30 @@ def network(l, c, r):
     return int(vlan)
 
 
+def split_value(string):
+  """Split a value, but preserve options."""
+  split = string.split(',')
+  result = []
+
+  level = 0
+  buf = []
+  for entry in split:
+    level += entry.count('(')
+    level -= entry.count(')')
+
+    buf.append(entry)
+    if level == 0:
+      result.append(','.join(buf))
+      buf = []
+  return result
+
+
 def options(c, node_id, options):
     for option in options.split(';'):
         option = option.split("=")
         name = option[0]
         if len(option) == 2:
-            values = option[1].split(',')
-            for value in values:
+            for value in split_values(option[1]):
                 row = [node_id, name, value]
                 c.execute('INSERT INTO option VALUES(NULL, ?, ?, ?)', row)
         else:
