@@ -185,9 +185,10 @@ def parse_service(c, node_id, service):
     domain = network.split('@')[0]
 
     c.execute(
-        'SELECT option.value FROM network, option '
+        'SELECT option.value FROM network, option JOIN host ON '
+        'network.node_id = host.network_id '
         'WHERE option.node_id = network.node_id AND option.name = "flow" AND '
-        'network.node_id = ?', (node_id, ))
+        '(host.node_id = ? OR network.node_id = ?)', (node_id, node_id))
     res = c.fetchone()
     default_flow = res[0] if res else domain.lower()
 
