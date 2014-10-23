@@ -184,6 +184,13 @@ def parse_service(c, node_id, service):
     network = c.fetchone()[0]
     domain = network.split('@')[0]
 
+    c.execute(
+        'SELECT option.value FROM network, option '
+        'WHERE option.node_id = network.node_id AND option.name = "flow" AND '
+        'network.node_id = ?', (node_id, ))
+    res = c.fetchone()
+    default_flow = res[0] if res else domain.lower()
+
     is_ipv4 = 0
     is_ipv6 = 0
     if not service_version:
@@ -200,7 +207,7 @@ def parse_service(c, node_id, service):
         flow_name = service_name.split('-')[0]
         service_name = service_name.split('-')[-1]
     else:
-        flow_name = domain.lower()
+        flow_name = default_flow
     flow_id = get_flow_id(c, flow_name)
 
     # Service?
