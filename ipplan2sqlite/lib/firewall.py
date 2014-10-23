@@ -61,7 +61,7 @@ def fetch_nodes_and_services(access, c, match=None):
             for package_name in _packages['default']:
                 nodes[node_id].add(package_name)
         # Remove blacklisted packages
-        for package in [x[1:] for x in packages if x[0] == '-']:
+        for package in [x[1:] for x in packages if x and x[0] == '-']:
             packages.remove('-' + package)
             packages.remove(package)
 
@@ -70,6 +70,9 @@ def fetch_nodes_and_services(access, c, match=None):
         for package_name in packages:
             # Remove options
             package_name = re.sub('\(.*\)', '', package_name)
+            if not package_name:
+              # Only default packages
+              continue
             package = _packages[package_name] or {}
             node_services[node] |= set(package.get(access, []))
 
