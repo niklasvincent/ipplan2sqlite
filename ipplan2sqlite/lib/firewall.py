@@ -88,6 +88,10 @@ def client_server(c):
         for client in fetch_nodes_and_services('client', c,
                                                match=service['full_name']):
             from_node_id = int(client[0])
+            client_service = parse_service(c, from_node_id, client[1])
+            if client_service['flow_id'] != service['flow_id']:
+              continue
+
             row = [from_node_id,
                    to_node_id,
                    service['service_id'],
@@ -176,19 +180,25 @@ def world(c):
 def parse_service(c, node_id, service):
     service_version = str(re.compile(r'[^\d.]+').sub('', service))
 
-    c.execute(
-        'SELECT network.name FROM network JOIN host '
-        'ON network.node_id = host.network_id WHERE host.node_id = ? OR '
-        'network.node_id = ?',
-        (node_id, node_id))
-    network = c.fetchone()[0]
+    c.execute('SELECT node_id FROM network WHERE node_id = ?', (node_id, ))
+    is_node_network = bool(c.fetchone())
+
+    if is_node_network:
+      c.execute(
+          'SELECT name, node_id FROM network WHERE node_id = ?',
+          (node_id, ))
+    else:
+     c.execute(
+            'SELECT network.name, network.node_id FROM network, host '
+            'WHERE network.node_id = host.network_id AND host.node_id = ?',
+            (node_id, ))
+
+    network, network_id = c.fetchone()
     domain = network.split('@')[0]
 
     c.execute(
-        'SELECT option.value FROM network, option JOIN host ON '
-        'network.node_id = host.network_id '
-        'WHERE option.node_id = network.node_id AND option.name = "flow" AND '
-        '(host.node_id = ? OR network.node_id = ?)', (node_id, node_id))
+        'SELECT value FROM option WHERE name = "flow" AND node_id = ?',
+        (network_id, ))
     res = c.fetchone()
     default_flow = res[0] if res else domain.lower()
 
