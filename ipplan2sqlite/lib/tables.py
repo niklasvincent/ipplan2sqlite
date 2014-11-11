@@ -20,6 +20,7 @@ def create(conn):
     c.execute('''CREATE TABLE network(
     node_id INTEGER,
     name TEXT,
+    short_name TEXT,
     vlan INTEGER,
     terminator TEXT,
     ipv4 INTEGER,
@@ -107,7 +108,7 @@ def create(conn):
         h.ipv4_addr_txt,
         n.ipv4_txt,
         substr(o.value, 1, 1) AS
-            sw, LOWER(n.name) ||
+            sw, LOWER(n.short_name) ||
             '-' ||
             substr(o.value, 1, 1) ||
             '.event.dreamhack.local'
@@ -129,7 +130,7 @@ def create(conn):
         h.ipv4_addr_txt,
         n.ipv4_txt,
         substr(o.value, 2, 1) AS
-            sw, LOWER(n.name) ||
+            sw, LOWER(n.short_name) ||
             '-' ||
             substr(o.value, 2, 1) ||
             '.event.dreamhack.local'
@@ -150,7 +151,7 @@ def create(conn):
         h.ipv4_addr_txt,
         n.ipv4_txt,
         substr(o.value, 3, 1) AS
-            sw, LOWER(n.name) ||
+            sw, LOWER(n.short_name) ||
             '-' ||
             substr(o.value, 3, 1) ||
             '.event.dreamhack.local'

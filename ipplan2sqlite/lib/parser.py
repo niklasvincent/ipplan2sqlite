@@ -25,7 +25,7 @@ def master_network(l, c, r):
     global _current_v6_base
     if r is not None:
         node_id = node(c)
-        name = 'DREAMHACK'
+        short_name = 'DREAMHACK'
         vlan = 0
         terminator = ''
 
@@ -49,16 +49,16 @@ def master_network(l, c, r):
         ipv6_netmask = 64
         ipv6_gateway = "%s::%d" % (_current_v6_base, last_digits)
 
-        name = '%s@%s' % (_current_domain, name)
+        name = '%s@%s' % (_current_domain, short_name)
 
-        row = [node_id, name, vlan, terminator, ip2long(ipv4, 4),
+        row = [node_id, name, short_name, vlan, terminator, ip2long(ipv4, 4),
                str(ipv4), str(ipv6), ip2long(
                    ipv4_netmask, 4), str(ipv4_netmask),
                str(ipv6_netmask), ip2long(ipv4_gateway, 4), str(ipv4_gateway),
                str(ipv6_gateway), int(ipv4_netmask_dec), 1]
 
         c.execute(
-            'INSERT INTO network VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)',
+            'INSERT INTO network VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)',
             row)
     else:
         return l
@@ -93,7 +93,7 @@ def host(l, c, vlan):
 
 def network(l, c, r):
     node_id = node(c)
-    name = l[0]
+    short_name = l[0]
     vlan = int(l[3])
     terminator = l[1]
 
@@ -110,14 +110,14 @@ def network(l, c, r):
     ipv6_netmask = 64
     ipv6_gateway = "%s:%d::%d" % (_current_v6_base, vlan, last_digits)
 
-    name = '%s@%s' % (_current_domain, name)
+    name = '%s@%s' % (_current_domain, short_name)
 
-    row = [node_id, name, vlan, terminator, ip2long(ipv4, 4),
+    row = [node_id, name, short_name, vlan, terminator, ip2long(ipv4, 4),
            str(ipv4), str(ipv6), ip2long(ipv4_netmask, 4), str(ipv4_netmask),
            str(ipv6_netmask), ip2long(ipv4_gateway, 4), str(ipv4_gateway),
            str(ipv6_gateway), int(ipv4_netmask_dec), 1]
     c.execute(
-        'INSERT INTO network VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)',
+        'INSERT INTO network VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)',
         row)
 
     options(c, node_id, l[4])

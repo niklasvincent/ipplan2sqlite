@@ -15,6 +15,7 @@ def add_all_rfc_1918(c):
     for ipv4 in ['10.0.0.0/8', '172.16.0.0/12', '192.168.0.0/16']:
         vlan = None
         name = "RFC_" + ipv4.split('.')[0]
+        short_name = name
         terminator = None
         net_ipv4 = ipcalc.Network(ipv4)
         ipv4_gateway = net_ipv4[1]
@@ -22,13 +23,13 @@ def add_all_rfc_1918(c):
         ipv4_netmask_dec = int(str(ipv4).split("/")[1])
         node_id = node(c)
 
-        row = [node_id, name, vlan, terminator, ip2long(ipv4, 4),
+        row = [node_id, name, short_name, vlan, terminator, ip2long(ipv4, 4),
                str(ipv4), None, ip2long(ipv4_netmask, 4), str(ipv4_netmask),
                None, ip2long(ipv4_gateway, 4), str(ipv4_gateway),
                None, int(ipv4_netmask_dec), 0]
 
         c.execute(
-            'INSERT INTO network VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)',
+            'INSERT INTO network VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)',
             row)
 
 
@@ -36,6 +37,7 @@ def add_any(c):
     node_id = node(c)
     vlan = None
     name = "ANY"
+    short_name = "ANY"
     terminator = None
 
     # IPv4
@@ -49,10 +51,10 @@ def add_any(c):
     ipv6_netmask = None
     ipv6_gateway = None
 
-    row = [node_id, name, vlan, terminator, 0,
+    row = [node_id, name, short_name, vlan, terminator, 0,
            str(ipv4), str(ipv6), None, None, ipv6_netmask,
            ipv4_gateway, ipv4_gateway, ipv6_gateway, ipv4_netmask_dec, 1]
 
     c.execute(
-        'INSERT INTO network VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)',
+        'INSERT INTO network VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)',
         row)
