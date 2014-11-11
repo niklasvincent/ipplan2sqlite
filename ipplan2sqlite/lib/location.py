@@ -4,15 +4,18 @@ from collections import namedtuple
 from layout import Rectangle
 
 
+def get_hall(table):
+    return re.search('([A-Za-z]+)[0-9]+', table).group(1)
+
+
 def add_coordinates(seatmap, cursor):
     halls = {}
     tables = {}
     for seat in seatmap:
-        hall = seat['hall'][0]
+        hall = get_hall(seat['row'])
         table = seat['row']
-        seat["row"] = hall + re.sub("[^0-9]", "", str(seat["row"]))
         halls.setdefault(hall, []).append(seat)
-        tables.setdefault(hall, {}).setdefault(seat["row"], []).append(seat)
+        tables.setdefault(hall, {}).setdefault(table, []).append(seat)
 
     switches = switches_by_table(cursor)
 
@@ -21,7 +24,7 @@ def add_coordinates(seatmap, cursor):
         x_min = float("inf")
         y_max = 0
         y_min = float("inf")
-        for table in tables[hall].iterkeys():
+        for table in sorted(tables[hall].keys(), key=lambda x: (len(x), x)):
             c = table_location(table, tables)
             table_coordinates.append((table, c))
             x_min = c.x1 if c.x1 < x_min else x_min
@@ -66,7 +69,7 @@ def switch_locations(t, n):
     if t.horizontal:
         for i in range(1, 2 * n, 2):
             x = t.x1 + (t.width / n) / 2 * i
-            y = t.y1 - t.height / 2 
+            y = t.y1 - t.height / 2
             locations.append((x, y))
         locations.reverse()
     else:
@@ -80,7 +83,7 @@ def switch_locations(t, n):
 
 def table_location(table, tables):
     seats = sorted(
-        tables[table[0]][table],
+        tables[get_hall(table)][table],
         key=lambda seat: int(seat['seat']))
     x1 = int(seats[-1]["x1"])
     x2 = int(seats[0]["x2"])
