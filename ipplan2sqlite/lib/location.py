@@ -12,8 +12,8 @@ def add_coordinates(seatmap, cursor):
     halls = {}
     tables = {}
     for seat in seatmap:
-        hall = get_hall(seat['row'])
-        table = seat['row']
+        table = seat['row'].strip()
+        hall = get_hall(table)
         halls.setdefault(hall, []).append(seat)
         tables.setdefault(hall, {}).setdefault(table, []).append(seat)
 
