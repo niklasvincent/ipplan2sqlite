@@ -8,11 +8,17 @@ def get_hall(table):
     return re.search('([A-Za-z]+)[0-9]+', table).group(1)
 
 
+def normalize_table(table):
+    table = table.strip()
+    hall, row = re.search('([A-Za-z]+)([0-9]+)', table).group(1,2)
+    return "{}{:02}".format(hall.upper(),int(row))
+
+
 def add_coordinates(seatmap, cursor):
     halls = {}
     tables = {}
     for seat in seatmap:
-        table = seat['row'].strip()
+        table = normalize_table(seat['row'])
         hall = get_hall(table)
         halls.setdefault(hall, []).append(seat)
         tables.setdefault(hall, {}).setdefault(table, []).append(seat)
