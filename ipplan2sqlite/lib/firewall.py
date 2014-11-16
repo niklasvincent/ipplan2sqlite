@@ -46,6 +46,11 @@ def fetch_nodes_and_services(access, c, match=None):
     c.execute('SELECT node_id, value FROM option WHERE name = ?', ('pkg', ))
     package_options = c.fetchall()
 
+    # Fetch all networks, we want to know if a node_id is a network for
+    # default packages.
+    c.execute('SELECT node_id FROM network')
+    networks = [x[0] for x in c.fetchall()]
+
     node_services = collections.defaultdict(set)
     for node_id, flow in explicit:
         node_services[node_id].add(flow)
@@ -57,7 +62,7 @@ def fetch_nodes_and_services(access, c, match=None):
     for node_id, packages in nodes.iteritems():
         if '-default' in packages:
             packages.remove('-default')
-        elif 'default' in _packages:
+        elif 'default' in _packages and node_id not in networks:
             for package_name in _packages['default']:
                 nodes[node_id].add(package_name)
         # Remove blacklisted packages
