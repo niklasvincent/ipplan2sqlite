@@ -20,7 +20,7 @@ from lib import statistics
 from lib import tables
 
 def generate(database, manifest_file, seatmap_file,
-             revision=None, ipplans=()):
+             revision=None, current_event=None, ipplans=()):
   logging.debug('Using Python %s', platform.python_version())
 
   # Create fresh database file
@@ -68,8 +68,13 @@ def generate(database, manifest_file, seatmap_file,
   if revision:
       c.execute("""INSERT INTO meta_data VALUES ('revision', '%d')""" %
               int(revision))
+  if not current_event is None:
+      c.execute(
+          "INSERT INTO meta_data VALUES ('current_event', ?)",
+          (current_event,))
   c.execute("""INSERT INTO meta_data VALUES ('time_generated', '%s')""" %
               datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
+
 
   # Read the ipplan file
   for ipplan in ipplans:
@@ -186,6 +191,8 @@ if __name__ == '__main__':
       help="Path to seatmap file")
   args_parser.add_argument("--revision", required=False,
       help="Which Subversion revision that triggered the generation")
+  args_parser.add_argument("--current_event", required=False,
+      help="The event the database is generated for")
   args_parser.add_argument('ipplans', metavar='ipplan', nargs='+',
       help='ipplan file')
   args = args_parser.parse_args()
@@ -207,4 +214,4 @@ if __name__ == '__main__':
       root.setLevel(logging.INFO)
 
   generate(args.database, args.manifest, args.seatmap,
-           args.revision, args.ipplans)
+           args.revision, args.current_event, args.ipplans)
