@@ -47,7 +47,7 @@ def master_network(l, c, r):
 
         last_digits = int(str(ipv4_gateway).split('.')[-1])
         ipv6_netmask = 64
-        ipv6_gateway = "%s::%d" % (_current_v6_base, last_digits)
+        ipv6_gateway = "%s::1" % (_current_v6_base, )
 
         name = '%s@%s' % (_current_domain, short_name)
 
