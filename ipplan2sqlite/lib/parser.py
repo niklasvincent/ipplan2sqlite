@@ -108,7 +108,7 @@ def network(l, c, r):
     last_digits = int(str(ipv4_gateway).split('.')[-1])
     ipv6 = "%s:%d::/64" % (_current_v6_base, vlan)
     ipv6_netmask = 64
-    ipv6_gateway = "%s:%d::%d" % (_current_v6_base, vlan, last_digits)
+    ipv6_gateway = "%s:%d::1" % (_current_v6_base, vlan)
 
     name = '%s@%s' % (_current_domain, short_name)
 
