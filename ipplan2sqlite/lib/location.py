@@ -57,10 +57,9 @@ def add_coordinates(seatmap, cursor):
                 row)
             n = len(switches.get(table, []))
             if n:
+                switch_order = sorted(switches[table])
                 locations = zip(
-                    sorted(switches[table]),
-                    switch_locations(coordinates,
-                                     n))
+                    switch_order, switch_locations(coordinates, n))
                 for switch_name, location in locations:
                     row = [switch_name, location[0], location[1], table]
                     cursor.execute(
@@ -71,19 +70,20 @@ def add_coordinates(seatmap, cursor):
 def switch_locations(t, n):
     locations = []
 
+    # TODO(bluecmd): This might need a closer look, talk to nlindblad
     padding = 2
     if t.horizontal:
         for i in range(1, 2 * n, 2):
             x = t.x1 + (t.width / n) / 2 * i
             y = t.y1 - t.height / 2
             locations.append((x, y))
-        locations.reverse()
     else:
         for i in range(1, 2 * n, 2):
             x = t.x1 - t.height / 2
             y = t.y1 + (t.width / n) / 2 * i - padding
             locations.append((x, y))
 
+    locations.reverse()
     return locations
 
 
