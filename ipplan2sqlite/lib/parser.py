@@ -65,10 +65,10 @@ def master_network(l, c, r):
     return
 
 
-def host(l, c, vlan):
+def host(l, c, network_id):
     node_id = node(c)
-    c.execute('SELECT node_id FROM network WHERE vlan = ?', (vlan, ))
-    network_id = int(c.fetchone()[0])
+    c.execute('SELECT vlan FROM network WHERE node_id = ?', (network_id, ))
+    vlan = int(c.fetchone()[0])
 
     name = l[1]
     ipv4_addr = l[2]
@@ -122,7 +122,7 @@ def network(l, c, r):
 
     options(c, node_id, l[4])
 
-    return int(vlan)
+    return node_id
 
 
 def split_value(string):
@@ -179,7 +179,7 @@ def parser_func(l):
 
 
 def parse(lines, c):
-    vlan = None
+    network_id = None
     for line in lines:
         if isinstance(line, str):
             line = line.strip().split()
@@ -187,6 +187,6 @@ def parse(lines, c):
             continue
         func = parser_func(line)
         if func:
-            parse_using = getattr(MODULE, func, vlan)
-            result = parse_using(line, c, vlan)
-            vlan = result if result is not None else vlan
+            parse_using = getattr(MODULE, func, network_id)
+            result = parse_using(line, c, network_id)
+            network_id = result if result is not None else network_id
