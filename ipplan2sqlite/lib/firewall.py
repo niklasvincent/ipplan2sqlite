@@ -7,7 +7,7 @@ _packages = None
 def add_services(services, c):
     for service, data in services.iteritems():
         row = [service,
-               data['description'],
+               data.get('description', service),
                ','.join(data['destport']),
                ','.join(data.get('sourceport',[])) or None]
         c.execute('INSERT INTO service VALUES (NULL, ?, ?, ?, ?)', row)
