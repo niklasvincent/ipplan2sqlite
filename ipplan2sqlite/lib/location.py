@@ -123,7 +123,7 @@ def switches_by_table(cursor):
     sql = '''SELECT switch_name FROM active_switch'''
     for switch in cursor.execute(sql).fetchall():
         table = switch[0].split('-')[0].upper()
-        table = table[0] + table[1:].lstrip('0')
+        table = table[0] + table[1:]
         switches[table] = switches.get(table, [])
         switches[table].append(switch[0])
     return switches
