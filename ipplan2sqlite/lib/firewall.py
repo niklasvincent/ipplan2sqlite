@@ -235,7 +235,8 @@ def parse_service(c, node_id, service):
     # Service?
     service_id = get_service_id(c, service_name)
     if service_id is None:
-      raise Exception("Internal Error: Failed to map service -> ID")
+      raise Exception(
+          "Internal Error: Failed to map service %s -> ID" % service_name)
 
     return {"full_name": service,
             "service_id": service_id,
