@@ -186,7 +186,8 @@ def world(c):
 
 
 def parse_service(c, node_id, service):
-    service_version = str(re.compile(r'[^\d.]+').sub('', service))
+    search = re.search('([46]{1,2})$', service)
+    service_version = search.group(0) if search else None
 
     c.execute('SELECT node_id FROM network WHERE node_id = ?', (node_id, ))
     is_node_network = bool(c.fetchone())
@@ -231,6 +232,8 @@ def parse_service(c, node_id, service):
 
     # Service?
     service_id = get_service_id(c, service_name)
+    if service_id is None:
+      raise Exception("Internal Error: Failed to map service -> ID")
 
     return {"full_name": service,
             "service_id": service_id,
