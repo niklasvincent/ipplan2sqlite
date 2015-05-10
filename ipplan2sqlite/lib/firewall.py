@@ -227,7 +227,9 @@ def parse_service(c, node_id, service):
     # Flow?
     if "-" in service_name:
         flow_name = service_name.split('-')[0]
-        service_name = service_name.split('-')[-1]
+        service_name = service_name.split('-', 1)[-1]
+        if flow_name == 'default':
+            flow_name = default_flow
     else:
         flow_name = default_flow
     flow_id = get_flow_id(c, flow_name)
