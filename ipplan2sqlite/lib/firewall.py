@@ -216,11 +216,13 @@ def parse_service(c, node_id, service):
     if not service_version:
         is_ipv4 = 1
         is_ipv6 = 1
-    if "4" in service_version:
-        is_ipv4 = 1
-    if "6" in service_version:
-        is_ipv6 = 1
-    service_name = service.replace(service_version, '')
+        service_name = service
+    else:
+        if "4" in service_version:
+            is_ipv4 = 1
+        if "6" in service_version:
+            is_ipv6 = 1
+        service_name = service[:-len(service_version)]
 
     # Flow?
     if "-" in service_name:
