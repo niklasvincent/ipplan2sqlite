@@ -32,11 +32,11 @@ class TestNetworks(BaseTestCase, unittest.TestCase):
 
         for network in actual_networks:
             self.assertTrue(
-                network[5] in expected_networks,
+                network[6] in expected_networks,
                 "Network not amongst expected network")
             self.assertEquals(
-                network[8],
-                expected_netmasks[expected_networks.index(network[5])],
+                network[9],
+                expected_netmasks[expected_networks.index(network[6])],
                 "Wrong netmask")
 
     def testAddAny(self):
@@ -47,8 +47,8 @@ class TestNetworks(BaseTestCase, unittest.TestCase):
             1,
             "Additional or missing networks")
         self.assertEquals(actual_networks[0][1], "ANY")
-        self.assertEquals(actual_networks[0][5], "0/0")
-        self.assertEquals(actual_networks[0][6], "::/0")
+        self.assertEquals(actual_networks[0][6], "0/0")
+        self.assertEquals(actual_networks[0][7], "::/0")
 
 
 def main():
