@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/nlindblad/ipplan2sqlite.svg)](https://travis-ci.org/nlindblad/ipplan2sqlite)
+
 ipplan2sqlite
 =============
 
