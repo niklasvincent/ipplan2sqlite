@@ -1,4 +1,4 @@
-Copyright (c) 2013-2015, Niklas Lindblad 
+Copyright (c) 2013-2015, Niklas Lindblad, Christian Svensson, Johan Marcusson and Torbjörn Lönnemark
 All rights reserved. 
 
 Redistribution and use in source and binary forms, with or without 
