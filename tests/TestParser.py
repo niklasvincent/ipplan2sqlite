@@ -40,31 +40,31 @@ class TestParser(BaseTestCase, unittest.TestCase):
         parser.parse(self._load('data/testParseMasterNetwork.txt'), self.c)
         networks = self._query('SELECT * FROM network')
         self.assertEquals(len(networks), 1, "Missing master network")
-        self.assertEquals(networks[0][0], 1, "Wrong node id")
-        self.assertEquals(networks[0][1], 'EVENT@DREAMHACK',
+        self.assertEquals(networks[0].node_id, 1, "Wrong node id")
+        self.assertEquals(networks[0].name, 'EVENT@DREAMHACK',
             "Wrong network name")
 
     def testParseNetworkAndHost(self):
         parser.parse(self._load('data/testParseNetworkAndHost.txt'), self.c)
 
         self.assertEquals(
-            self._query('SELECT COUNT(*) FROM node')[0][0],
+            self._query('SELECT COUNT(*) as nbr_of_nodes FROM node')[0][0],
             2,
             "Wrong number of nodes")
 
         host = self._query('SELECT * FROM host')[0]
-        self.assertEquals(host[0], 2, "Wrong node id")
+        self.assertEquals(host.node_id, 2, "Wrong node id")
         self.assertEquals(
-            host[1],
+            host.name,
             'ddns1.event.dreamhack.se',
             "Wrong hostname")
-        self.assertEquals(host[2], 1297147849, "Wrong IPv4 long")
-        self.assertEquals(host[3], '77.80.231.201', "Wrong IPv4 address")
+        self.assertEquals(host.ipv4_addr, 1297147849, "Wrong IPv4 long")
+        self.assertEquals(host.ipv4_addr_txt, '77.80.231.201', "Wrong IPv4 address")
         self.assertEquals(
-            host[4],
+            host.ipv6_addr_txt,
             '2001:67c:24d8:921::201',
             "Wrong IPv6 address")
-        self.assertEquals(host[5], 1, "Wrong network id")
+        self.assertEquals(host.network_id, 1, "Wrong network id")
 
         options = self._query('SELECT * FROM option')
         self.assertEquals(len(options), 16, "Wrong number of options")
@@ -89,30 +89,33 @@ class TestParser(BaseTestCase, unittest.TestCase):
                           921     othernet"""
         vlan = parser.network(network_line.split(), self.c, None)
         network = self._query('SELECT * FROM network')[0]
-        self.assertEquals(network[0], 1, "Wrong node id")
-        self.assertEquals(network[1], 'EVENT@TECH-SRV-1-INT', "Wrong network name")
-        self.assertEquals(network[3], 921, "Wrong VLAN")
-        self.assertEquals(network[4], 'D-FW-V', "Wrong terminator")
-        self.assertEquals(network[5], 1297147648, "Wrong IPv4 long")
-        self.assertEquals(network[6], "77.80.231.0/27", "Wrong IPv4 address")
+        self.assertEquals(network.node_id, 1, "Wrong node id")
+        self.assertEquals(network.name, 'EVENT@TECH-SRV-1-INT', "Wrong network name")
+        self.assertEquals(network.vlan, 921, "Wrong VLAN")
+        self.assertEquals(network.terminator, 'D-FW-V', "Wrong terminator")
+        self.assertEquals(network.ipv4, 1297147648, "Wrong IPv4 long")
+        self.assertEquals(network.ipv4_txt, "77.80.231.0/27", "Wrong IPv4 address")
         self.assertEquals(
             network[7],
             "2001:67c:24d8:921::/64",
             "Wrong IPv6 address")
-        self.assertEquals(network[8], 4294967264, "Wrong IPv4 netmask long")
-        self.assertEquals(network[9], "255.255.255.224", "Wrong IPv4 netmask")
-        self.assertEquals(network[10], "64", "Wrong IPv6 netmask decimal")
-        self.assertEquals(network[11], 1297147649, "Wrong IPv4 gateway long")
+        self.assertEquals(network.ipv4_netmask, 4294967264, "Wrong IPv4 netmask long")
         self.assertEquals(
-            network[12],
+            network.ipv4_netmask_txt,
+            "255.255.255.224",
+            "Wrong IPv4 netmask")
+        self.assertEquals(network.ipv6_netmask_txt, "64", "Wrong IPv6 netmask decimal")
+        self.assertEquals(network.ipv4_gateway, 1297147649, "Wrong IPv4 gateway long")
+        self.assertEquals(
+            network.ipv4_gateway_txt,
             "77.80.231.1",
             "Wrong IPv4 gateway address ")
         self.assertEquals(
-            network[13],
+            network.ipv6_gateway_txt,
             "2001:67c:24d8:921::1",
             "Wrong IPv6 gateway address")
-        self.assertEquals(network[14], 27, "Wrong IPv4 netmask decimal")
-        self.assertEquals(network[15], 1, "Wrong IPv6 capability")
+        self.assertEquals(network.ipv4_netmask_dec, 27, "Wrong IPv4 netmask decimal")
+        self.assertEquals(network.ipv6_capable, 1, "Wrong IPv6 capability")
 
 
 def main():

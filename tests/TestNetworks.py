@@ -14,7 +14,7 @@ class TestNetworks(BaseTestCase, unittest.TestCase):
 
     def testAddAll(self):
         networks.add_all(self.c)
-        nbr_of_networks = self._query('SELECT COUNT(*) FROM network')[0][0]
+        nbr_of_networks = self._query('SELECT COUNT(*) as nbr_of_networks FROM network')[0][0]
         self.assertEquals(
             nbr_of_networks,
             4,
@@ -32,10 +32,10 @@ class TestNetworks(BaseTestCase, unittest.TestCase):
 
         for network in actual_networks:
             self.assertTrue(
-                network[6] in expected_networks,
+                network.ipv4_txt in expected_networks,
                 "Network not amongst expected network")
             self.assertEquals(
-                network[9],
+                network.ipv4_netmask_txt,
                 expected_netmasks[expected_networks.index(network[6])],
                 "Wrong netmask")
 
@@ -46,9 +46,9 @@ class TestNetworks(BaseTestCase, unittest.TestCase):
             len(actual_networks),
             1,
             "Additional or missing networks")
-        self.assertEquals(actual_networks[0][1], "ANY")
-        self.assertEquals(actual_networks[0][6], "0/0")
-        self.assertEquals(actual_networks[0][7], "::/0")
+        self.assertEquals(actual_networks[0].name, "ANY")
+        self.assertEquals(actual_networks[0].ipv4_txt, "0/0")
+        self.assertEquals(actual_networks[0].ipv6_txt, "::/0")
 
 
 def main():

@@ -3,11 +3,18 @@ import os
 import sqlite3
 import sys
 import yaml
+from collections import namedtuple
 
 path = os.path.abspath(os.path.join(os.path.dirname(__file__), '../lib'))
 sys.path.insert(1, path)
 import parser
 import tables
+
+
+def namedtuple_factory(cursor, row):
+    fields = [col[0] for col in cursor.description]
+    Row = namedtuple("Row", fields)
+    return Row(*row)
 
 
 class BaseTestCase(object):
@@ -35,6 +42,7 @@ class BaseTestCase(object):
 
     def setUp(self):
         self.conn = sqlite3.connect(':memory:')
+        self.conn.row_factory = namedtuple_factory
         self.c = self.conn.cursor()
         tables.create(self.conn)
 
