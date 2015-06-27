@@ -3,12 +3,15 @@ from collections import namedtuple
 
 from layout import Rectangle
 
+def is_valid_seat(seat):
+    return all (key in seat for key in ("row", "seat", "x1", "x2", "y1", "y2"))
 
-def get_hall(table):
+
+def get_hall_from_table_name(table):
     return re.search('([A-Za-z]+)[0-9]+', table).group(1)
 
 
-def normalize_table(table):
+def normalize_table_name(table):
     table = table.strip()
     hall, row = re.search('([A-Za-z]+)([0-9]+)', table).group(1,2)
     return "{}{:02}".format(hall.upper(),int(row))
@@ -18,8 +21,10 @@ def add_coordinates(seatmap, cursor):
     halls = {}
     tables = {}
     for seat in seatmap:
-        table = normalize_table(seat['row'])
-        hall = get_hall(table)
+        if not is_valid_seat(seat):
+            continue
+        table = normalize_table_name(seat['row'])
+        hall = get_hall_from_table_name(table)
         halls.setdefault(hall, []).append(seat)
         tables.setdefault(hall, {}).setdefault(table, []).append(seat)
 
@@ -89,7 +94,7 @@ def switch_locations(t, n):
 
 def table_location(table, tables):
     seats = sorted(
-        tables[get_hall(table)][table],
+        tables[get_hall_from_table_name(table)][table],
         key=lambda seat: int(seat['seat']))
     x1 = int(seats[-1]["x1"])
     x2 = int(seats[0]["x2"])
