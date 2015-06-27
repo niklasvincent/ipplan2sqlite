@@ -11,6 +11,7 @@ coverage:
 	  coverage run -p tests/TestParser.py
 	  coverage run -p tests/TestNetworks.py
 	  coverage run -p tests/TestFirewall.py
+	  coverage run -p lib/ipcalc.py
 	  coverage combine
 	  coverage report -m
 
