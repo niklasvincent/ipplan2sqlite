@@ -7,7 +7,7 @@ from collections import namedtuple
 
 path = os.path.abspath(os.path.join(os.path.dirname(__file__), '../lib'))
 sys.path.insert(1, path)
-import parser
+import processor
 import tables
 
 

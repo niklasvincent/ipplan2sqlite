@@ -3,7 +3,7 @@ import ipcalc
 import socket
 import struct
 from binascii import hexlify
-from parser import ip2long, node
+from processor import ip2long, node
 
 
 def add_all(c):

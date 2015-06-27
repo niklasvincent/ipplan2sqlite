@@ -6,20 +6,20 @@ from BaseTestCase import BaseTestCase
 
 path = os.path.abspath(os.path.join(os.path.dirname(__file__), '../lib'))
 sys.path.insert(1, path)
-import parser
 
+import processor
 
 class TestParser(BaseTestCase, unittest.TestCase):
 
     def testParseIPv4(self):
-        self.assertEquals(parser.ip2long('8.8.8.8', 4), 134744072)
-        self.assertEquals(parser.ip2long('77.80.251.247/32', 4), 1297153015)
+        self.assertEquals(processor.ip2long('8.8.8.8', 4), 134744072)
+        self.assertEquals(processor.ip2long('77.80.251.247/32', 4), 1297153015)
 
     def testParserMapping(self):
         l = ["""#$ d20--b.event.dreamhack.local\t\t\t10.0.3.45
                 \t\t\tipv4f;ipv4r;tblswmgmt"""]
         self.assertEquals(
-            parser.parser_func(
+            processor.parser_func(
                 l
             ),
             "host"
@@ -27,17 +27,17 @@ class TestParser(BaseTestCase, unittest.TestCase):
         l = ["""TECH-SRV-1-INT
                 D-FW-V          77.80.231.0/27          921     othernet"""]
         self.assertEquals(
-            parser.parser_func(
+            processor.parser_func(
                 l
             ),
             "network"
         )
         self.assertEquals(
-            parser.parser_func(["""#@ IPV4-NET      77.80.128.0/17"""]),
+            processor.parser_func(["""#@ IPV4-NET      77.80.128.0/17"""]),
             "master_network")
 
     def testParseMasterNetwork(self):
-        parser.parse(self._load('data/testParseMasterNetwork.txt'), self.c)
+        processor.parse(self._load('data/testParseMasterNetwork.txt'), self.c)
         networks = self._query('SELECT * FROM network')
         self.assertEquals(len(networks), 1, "Missing master network")
         self.assertEquals(networks[0].node_id, 1, "Wrong node id")
@@ -45,7 +45,7 @@ class TestParser(BaseTestCase, unittest.TestCase):
             "Wrong network name")
 
     def testParseNetworkAndHost(self):
-        parser.parse(self._load('data/testParseNetworkAndHost.txt'), self.c)
+        processor.parse(self._load('data/testParseNetworkAndHost.txt'), self.c)
 
         self.assertEquals(
             self._query('SELECT COUNT(*) as nbr_of_nodes FROM node')[0][0],
@@ -87,7 +87,7 @@ class TestParser(BaseTestCase, unittest.TestCase):
         network_line = """TECH-SRV-1-INT
                           D-FW-V          77.80.231.0/27
                           921     othernet"""
-        vlan = parser.network(network_line.split(), self.c, None)
+        vlan = processor.network(network_line.split(), self.c, None)
         network = self._query('SELECT * FROM network')[0]
         self.assertEquals(network.node_id, 1, "Wrong node id")
         self.assertEquals(network.name, 'EVENT@TECH-SRV-1-INT', "Wrong network name")
