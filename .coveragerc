@@ -1,0 +1,16 @@
+# =========================================================================
+# COVERAGE CONFIGURATION FILE: .coveragerc
+# =========================================================================
+# LANGUAGE: Python
+# SEE ALSO:
+#  * http://nedbatchelder.com/code/coverage/
+#  * http://nedbatchelder.com/code/coverage/config.html
+# =========================================================================
+
+[run]
+cover_pylib = False
+branch  = False
+data_file = .coverage
+parallel = True
+source = .
+omit = examples/*
