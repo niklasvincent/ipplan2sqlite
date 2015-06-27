@@ -15,7 +15,7 @@ from lib import diff
 from lib import firewall
 from lib import location
 from lib import networks
-from lib import parser
+from lib import processor
 from lib import statistics
 from lib import tables
 
@@ -94,7 +94,7 @@ def generate(database, manifest_file, seatmap_file,
 
     # Parse ipplan
     logging.debug('Parsing ipplan')
-    parser.parse(lines, c)
+    processor.parse(lines, c)
 
   # Add custom networks
   logging.debug('Adding custom networks')
@@ -126,7 +126,7 @@ def generate(database, manifest_file, seatmap_file,
   # Add flows to database
   try:
       firewall.add_flows(manifest['flows'], c)
-      firewall.add_flows([x.lower() for x in parser.get_domains()], c)
+      firewall.add_flows([x.lower() for x in processor.get_domains()], c)
   except Exception as e:
       logging.error('Could not add flows to database: %s', e)
       sys.exit(8)

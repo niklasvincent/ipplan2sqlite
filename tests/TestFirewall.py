@@ -8,7 +8,7 @@ path = os.path.abspath(os.path.join(os.path.dirname(__file__), '../lib'))
 sys.path.insert(1, path)
 import firewall
 import networks
-import parser
+import processor
 import tables
 
 
@@ -21,12 +21,12 @@ class TestFirewall(BaseTestCase, unittest.TestCase):
         firewall.add_flows(manifest['flows'], self.c)
         firewall.add_packages(manifest['packages'], self.c)
         networks.add_all(self.c)
-        parser.parse(self._load('data/masterNetwork.txt'), self.c)
-        firewall.add_flows([x.lower() for x in parser.get_domains()], self.c)
+        processor.parse(self._load('data/masterNetwork.txt'), self.c)
+        firewall.add_flows([x.lower() for x in processor.get_domains()], self.c)
 
     def testServerClientRule(self):
         lines = self._load('data/testServerClientRules.txt')
-        parser.parse(lines, self.c)
+        processor.parse(lines, self.c)
         firewall.build(self.c)
         rules = self._query('SELECT * FROM firewall_rule_ip_level')
         self.assertEquals(len(rules), 1, "Wrong number of firewall rules")
@@ -54,7 +54,7 @@ class TestFirewall(BaseTestCase, unittest.TestCase):
             "Wrong destination port/protocol")
 
     def testPublicRule(self):
-        parser.parse(self._load('data/testPublicRule.txt'), self.c)
+        processor.parse(self._load('data/testPublicRule.txt'), self.c)
         firewall.build(self.c)
         rules = self._query('SELECT * FROM firewall_rule_ip_level')
         self.assertEquals(len(rules), 8, "Wrong number of firewall rules")
@@ -78,7 +78,7 @@ class TestFirewall(BaseTestCase, unittest.TestCase):
         self.assertEquals(len(rule), 1, "Wrong number of firewall rules")
 
     def testWorldRule(self):
-        parser.parse(self._load('data/testWorldRule.txt'), self.c)
+        processor.parse(self._load('data/testWorldRule.txt'), self.c)
         firewall.build(self.c)
         rules = self._query('SELECT * FROM firewall_rule_ip_level')
         self.assertEquals(len(rules), 1, "Wrong number of firewall rules")
@@ -100,7 +100,7 @@ class TestFirewall(BaseTestCase, unittest.TestCase):
             "Wrong destination port/protocol")
 
     def testLocalRule(self):
-        parser.parse(self._load('data/testLocalRule.txt'), self.c)
+        processor.parse(self._load('data/testLocalRule.txt'), self.c)
         firewall.build(self.c)
         rules = self._query('SELECT * FROM firewall_rule_ip_level')
         self.assertEquals(len(rules), 1, "Wrong number of firewall rules")
