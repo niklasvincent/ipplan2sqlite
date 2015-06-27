@@ -6,7 +6,7 @@ from Tkinter import *
 import ttk
 
 """ Make sure library is in our PYTHONPATH """
-path = os.path.abspath(os.path.join(os.path.dirname(__file__), 'lib'))
+path = os.path.abspath(os.path.join(os.path.dirname(__file__), '../lib'))
 if not path in sys.path:
     sys.path.insert(1, path)
 
