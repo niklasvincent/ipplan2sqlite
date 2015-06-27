@@ -8,13 +8,10 @@ test:
 
 coverage:
 	  coverage erase
-	  coverage run tests/TestParser.py
-	  coverage report -m
-	  coverage erase
-	  coverage run tests/TestNetworks.py
-	  coverage report -m
-	  coverage erase
-	  coverage run tests/TestFirewall.py
+	  coverage run -p tests/TestParser.py
+	  coverage run -p tests/TestNetworks.py
+	  coverage run -p tests/TestFirewall.py
+	  coverage combine
 	  coverage report -m
 
 draw: debug
