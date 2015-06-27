@@ -9,15 +9,17 @@ Used by the Dreamhack Network Crew.
 
 ## Example file
 
-    #Name				#Terminator	#Net			#VLAN	#Options
-    DHTECH-TEST-1			R1		77.80.255.192/26	303	pkg=opsagent;flow=colo
-    #GW						        77.80.255.193
-    #$ test.event.dreamhack.se		        	77.80.255.196			pkg=something
+The file needs to use tabs for alignment, size 8 is recommended. UTF8 and UNIX line feed are required.
+
+    #Name             #Terminator   #Net              #VLAN     #Options
+    DHTECH-TEST-1     R1            77.80.255.192/26  303       pkg=opsagent;flow=colo
+    #GW                             77.80.255.193
+    #$ test.event.dreamhack.se      77.80.255.196               pkg=something
    
-    #Name				#Terminator	#Net			#VLAN	#Options
-    DHTECH-TEST-2		       	R1		10.20.4.0/24		204	nat=1.2.3.4
-    #GW					        	10.20.4.1
-    #$ host.tech.dreamhack.local	        	10.20.4.3			os=esxi
+    #Name             #Terminator   #Net              #VLAN     #Options
+    DHTECH-TEST-2     R1            10.20.4.0/24      204       nat=1.2.3.4
+    #GW                             10.20.4.1
+    #$ host.tech.dreamhack.local    10.20.4.3                   os=esxi
 
 ## How to define a network
 
