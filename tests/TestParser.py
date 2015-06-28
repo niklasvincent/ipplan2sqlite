@@ -83,6 +83,17 @@ class TestParser(BaseTestCase, unittest.TestCase):
             8,
             "Missing or additional options")
 
+    def testParseNetworkAndHostNoVlan(self):
+        processor.parse(
+            self._load('data/testParseNetworkAndHostNoVlan.txt'), self.c)
+
+        host = self._query('SELECT * FROM host')[0]
+        self.assertEquals(host.ipv4_addr, 1297147849, "Wrong IPv4 long")
+        self.assertEquals(host.ipv4_addr_txt, '77.80.231.201', "Wrong IPv4 address")
+        self.assertEquals(host.ipv6_addr_txt, None, "Has an IPv6 address")
+        self.assertEquals(host.network_id, 1, "Wrong network id")
+
+
     def testParseNetwork(self):
         network_line = """TECH-SRV-1-INT
                           D-FW-V          77.80.231.0/27
@@ -116,6 +127,18 @@ class TestParser(BaseTestCase, unittest.TestCase):
             "Wrong IPv6 gateway address")
         self.assertEquals(network.ipv4_netmask_dec, 27, "Wrong IPv4 netmask decimal")
         self.assertEquals(network.ipv6_capable, 1, "Wrong IPv6 capability")
+
+    def testParseNetworkNoVlan(self):
+        network_line = """TECH-SRV-1-INT
+                          D-FW-V          77.80.231.0/27
+                          -     othernet"""
+        vlan = processor.network(network_line.split(), self.c, None)
+        network = self._query('SELECT * FROM network')[0]
+        self.assertEquals(network.vlan, None, "Has VLAN")
+        self.assertEquals(network[7], None, "Has IPv6 address")
+        self.assertEquals(network.ipv6_netmask_txt, None, "Has IPv6 netmask decimal")
+        self.assertEquals(network.ipv6_gateway_txt, None, "Has IPv6 gateway address")
+        self.assertEquals(network.ipv6_capable, 0, "Wrong IPv6 capability")
 
 
 def main():
