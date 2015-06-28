@@ -12,8 +12,15 @@ import processor
 class TestParser(BaseTestCase, unittest.TestCase):
 
     def testParseIPv4(self):
-        self.assertEquals(processor.ip2long('8.8.8.8', 4), 134744072)
-        self.assertEquals(processor.ip2long('77.80.251.247/32', 4), 1297153015)
+        self.assertEquals(
+            processor.ip2long('8.8.8.8', processor.AddressFormats.IPv4),
+            134744072
+        )
+        self.assertEquals(
+            processor.ip2long('77.80.251.247/32',
+                processor.AddressFormats.IPv4),
+            1297153015
+        )
 
     def testParserMapping(self):
         l = ["""#$ d20--b.event.dreamhack.local\t\t\t10.0.3.45
