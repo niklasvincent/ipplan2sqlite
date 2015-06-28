@@ -4,7 +4,7 @@ import socket
 import struct
 from binascii import hexlify
 from processor import ip2long, node
-
+from options import Address
 
 def add_all(c):
     add_all_rfc_1918(c)
@@ -23,9 +23,9 @@ def add_all_rfc_1918(c):
         ipv4_netmask_dec = int(str(ipv4).split("/")[1])
         node_id = node(c)
 
-        row = [node_id, name, short_name, vlan, terminator, ip2long(ipv4, 4),
-               str(ipv4), None, ip2long(ipv4_netmask, 4), str(ipv4_netmask),
-               None, ip2long(ipv4_gateway, 4), str(ipv4_gateway),
+        row = [node_id, name, short_name, vlan, terminator, ip2long(ipv4, Address.IPv4),
+               str(ipv4), None, ip2long(ipv4_netmask, Address.IPv4), str(ipv4_netmask),
+               None, ip2long(ipv4_gateway, Address.IPv4), str(ipv4_gateway),
                None, int(ipv4_netmask_dec), 0]
 
         c.execute(

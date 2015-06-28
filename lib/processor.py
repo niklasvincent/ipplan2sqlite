@@ -5,6 +5,8 @@ import struct
 import sys
 from binascii import hexlify
 
+from options import Address
+
 MODULE = sys.modules[__name__]
 
 SYNTAX = {
@@ -51,10 +53,9 @@ def master_network(l, c, r):
 
         name = '%s@%s' % (_current_domain, short_name)
 
-        row = [node_id, name, short_name, vlan, terminator, ip2long(ipv4, 4),
-               str(ipv4), str(ipv6), ip2long(
-                   ipv4_netmask, 4), str(ipv4_netmask),
-               str(ipv6_netmask), ip2long(ipv4_gateway, 4), str(ipv4_gateway),
+        row = [node_id, name, short_name, vlan, terminator, ip2long(ipv4, Address.IPv4),
+               str(ipv4), str(ipv6), ip2long(ipv4_netmask, Address.IPv4), str(ipv4_netmask),
+               str(ipv6_netmask), ip2long(ipv4_gateway, Address.IPv4), str(ipv4_gateway),
                str(ipv6_gateway), int(ipv4_netmask_dec), 1]
 
         c.execute(
@@ -82,9 +83,7 @@ def host(l, c, network_id):
     row = [
         node_id,
         name,
-        ip2long(
-            ipv4_addr,
-            4),
+        ip2long(ipv4_addr, Address.IPv4),
         ipv4_addr,
         ipv6_addr,
         network_id]
@@ -121,9 +120,9 @@ def network(l, c, r):
 
     name = '%s@%s' % (_current_domain, short_name)
 
-    row = [node_id, name, short_name, vlan, terminator, ip2long(ipv4, 4),
-           str(ipv4), ipv6, ip2long(ipv4_netmask, 4), str(ipv4_netmask),
-           ipv6_netmask, ip2long(ipv4_gateway, 4), str(ipv4_gateway),
+    row = [node_id, name, short_name, vlan, terminator, ip2long(ipv4, Address.IPv4),
+           str(ipv4), ipv6, ip2long(ipv4_netmask, Address.IPv4), str(ipv4_netmask),
+           ipv6_netmask, ip2long(ipv4_gateway, Address.IPv4), str(ipv4_gateway),
            ipv6_gateway, int(ipv4_netmask_dec), 1 if not ipv6 is None else 0]
     c.execute(
         'INSERT INTO network VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)',
@@ -173,7 +172,7 @@ def node(c):
 
 def ip2long(ip, version):
     ip = str(ip).split("/")[0]
-    if version == 4:
+    if version == Address.IPv4:
         packedIP = socket.inet_aton(ip)
         return struct.unpack("!L", packedIP)[0]
     else:
