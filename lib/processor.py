@@ -68,12 +68,16 @@ def master_network(l, c, r):
 def host(l, c, network_id):
     node_id = node(c)
     c.execute('SELECT vlan FROM network WHERE node_id = ?', (network_id, ))
-    vlan = int(c.fetchone()[0])
+    vlan = c.fetchone()[0]
+    vlan = int(vlan) if not vlan is None else None
 
     name = l[1]
     ipv4_addr = l[2]
-    last_digits = int(str(ipv4_addr).split('.')[-1])
-    ipv6_addr = "%s:%d::%d" % (_current_v6_base, vlan, last_digits)
+    if vlan:
+        last_digits = int(str(ipv4_addr).split('.')[-1])
+        ipv6_addr = "%s:%d::%d" % (_current_v6_base, vlan, last_digits)
+    else:
+        ipv6_addr = None
 
     row = [
         node_id,
@@ -94,7 +98,7 @@ def host(l, c, network_id):
 def network(l, c, r):
     node_id = node(c)
     short_name = l[0]
-    vlan = int(l[3])
+    vlan = int(l[3]) if l[3] != '-' else None
     terminator = l[1]
 
     # IPv4
@@ -105,17 +109,22 @@ def network(l, c, r):
     ipv4_netmask_dec = int(str(l[2]).split("/")[1])
 
     # IPv6
-    last_digits = int(str(ipv4_gateway).split('.')[-1])
-    ipv6 = "%s:%d::/64" % (_current_v6_base, vlan)
-    ipv6_netmask = 64
-    ipv6_gateway = "%s:%d::1" % (_current_v6_base, vlan)
+    if vlan:
+        last_digits = int(str(ipv4_gateway).split('.')[-1])
+        ipv6 = "%s:%d::/64" % (_current_v6_base, vlan)
+        ipv6_netmask = 64
+        ipv6_gateway = "%s:%d::1" % (_current_v6_base, vlan)
+    else:
+        ipv6 = None
+        ipv6_netmask = None
+        ipv6_gateway = None
 
     name = '%s@%s' % (_current_domain, short_name)
 
     row = [node_id, name, short_name, vlan, terminator, ip2long(ipv4, 4),
-           str(ipv4), str(ipv6), ip2long(ipv4_netmask, 4), str(ipv4_netmask),
-           str(ipv6_netmask), ip2long(ipv4_gateway, 4), str(ipv4_gateway),
-           str(ipv6_gateway), int(ipv4_netmask_dec), 1]
+           str(ipv4), ipv6, ip2long(ipv4_netmask, 4), str(ipv4_netmask),
+           ipv6_netmask, ip2long(ipv4_gateway, 4), str(ipv4_gateway),
+           ipv6_gateway, int(ipv4_netmask_dec), 1 if not ipv6 is None else 0]
     c.execute(
         'INSERT INTO network VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)',
         row)
