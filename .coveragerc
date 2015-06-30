@@ -13,4 +13,7 @@ branch  = False
 data_file = .coverage
 parallel = True
 source = .
-omit = examples/*
+[report]
+omit =
+  examples/*
+  lib/ipcalc.py
