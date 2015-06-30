@@ -1,5 +1,6 @@
 [![Build Status](https://travis-ci.org/nlindblad/ipplan2sqlite.svg?branch=master)](https://travis-ci.org/nlindblad/ipplan2sqlite)
 [![Coverage Status](https://coveralls.io/repos/nlindblad/ipplan2sqlite/badge.svg?branch=master)](https://coveralls.io/r/nlindblad/ipplan2sqlite?branch=master)
+[![Code Analysis Status](https://d3s6mut3hikguw.cloudfront.net/github/nlindblad/ipplan2sqlite/badges/gpa.svg)](https://codeclimate.com/github/nlindblad/ipplan2sqlite)
 
 ipplan2sqlite
 =============
