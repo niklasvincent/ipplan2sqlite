@@ -22,23 +22,19 @@ class BaseTestCase(object):
     def _query(self, q):
         return self.c.execute(q).fetchall()
 
+    def _open(self, filename, callback):
+        filename = os.path.abspath(os.path.join(os.path.dirname(__file__), filename))
+        with open(filename, 'r') as f:
+            return callback(f)
+
     def _load(self, f):
-        f = os.path.abspath(os.path.join(os.path.dirname(__file__), f))
-        with open(f, 'r') as f:
-            lines = f.readlines()
-        return lines
+        return self._open(f, lambda x: x.readlines())
 
     def _load_JSON(self, f):
-        f = os.path.abspath(os.path.join(os.path.dirname(__file__), f))
-        with open(f, 'r') as f:
-            data = json.load(f)
-        return data
+        return self._open(f, lambda x: json.load(x))
 
     def _load_YAML(self, f):
-        f = os.path.abspath(os.path.join(os.path.dirname(__file__), f))
-        with open(f, 'r') as f:
-            data = yaml.load(f.read())
-        return data
+        return self._open(f, lambda x: yaml.load(x.read()))
 
     def setUp(self):
         self.conn = sqlite3.connect(':memory:')
